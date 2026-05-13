@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glass Garden | 유리정원</title>
+<meta name="description" content="한물간 모델 한지오가 메종 캠페인과 위장 연애 계약 안으로 들어가며 시작되는 인터랙티브 로맨스 랜딩 페이지.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Fraunces:opsz,wght@9..144,300..800&family=Instrument+Sans:wght@400..700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #050609;
+    --night: #0b0d11;
+    --obsidian: #111014;
+    --panel: rgba(18, 18, 22, 0.78);
+    --panel-soft: rgba(228, 217, 196, 0.055);
+    --line: rgba(211, 181, 105, 0.25);
+    --line-strong: rgba(224, 193, 118, 0.52);
+    --paper: #f2ead8;
+    --paper-dim: #b9ac91;
+    --paper-muted: #766f63;
+    --gold: #d4ad5f;
+    --gold-bright: #f0cc82;
+    --green: #1f5a47;
+    --green-soft: #48a17d;
+    --wine: #7d1e34;
+    --wine-bright: #bd3c58;
+    --blue: #23385f;
+    --shadow: rgba(0, 0, 0, 0.45);
+    --display: "Fraunces", "Nanum Myeongjo", serif;
+    --serif: "Cormorant Garamond", "Nanum Myeongjo", serif;
+    --ko: "Nanum Myeongjo", serif;
+    --sans: "Instrument Sans", system-ui, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--void);
+    color: var(--paper);
+    font-family: var(--ko);
+    line-height: 1.72;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.12;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  .entry-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+      radial-gradient(circle at 18% 24%, rgba(31, 90, 71, 0.28), transparent 34%),
+      radial-gradient(circle at 80% 76%, rgba(125, 30, 52, 0.24), transparent 36%),
+      #050609;
+    transition: opacity 0.7s ease, visibility 0.7s ease;
+  }
+
+  .entry-gate.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .gate-panel {
+    width: min(520px, 100%);
+    position: relative;
+    padding: clamp(34px, 7vw, 64px);
+    text-align: center;
+    border: 1px solid var(--line-strong);
+    background: rgba(8, 9, 12, 0.72);
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(18px);
+  }
+
+  .gate-panel::before,
+  .gate-panel::after {
+    content: "";
+    position: absolute;
+    width: 58px;
+    height: 58px;
+    border-color: var(--gold);
+    opacity: 0.75;
+  }
+
+  .gate-panel::before {
+    top: 16px;
+    left: 16px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+
+  .gate-panel::after {
+    right: 16px;
+    bottom: 16px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+  }
+
+  .gate-kicker,
+  .section-kicker,
+  .eyebrow,
+  .metric-label,
+  .choice-label {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+  }
+
+  .gate-title {
+    margin-top: 18px;
+    font-family: var(--display);
+    font-size: clamp(3.2rem, 12vw, 6rem);
+    font-weight: 300;
+    line-height: 0.9;
+  }
+
+  .gate-title em {
+    color: var(--wine-bright);
+    font-style: italic;
+  }
+
+  .gate-subtitle {
+    max-width: 320px;
+    margin-top: 18px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.02rem;
+    color: var(--paper-dim);
+    line-height: 1.8;
+  }
+
+  .gate-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 34px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 22px;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--paper);
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--gold-bright);
+  }
+
+  .btn.primary {
+    background: var(--gold);
+    color: #120e09;
+  }
+
+  .btn.primary:hover {
+    background: var(--gold-bright);
+  }
+
+  .btn.ghost {
+    color: var(--paper-dim);
+  }
+
+  .site-shell {
+    position: relative;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 20% 6%, rgba(72, 161, 125, 0.12), transparent 30%),
+      radial-gradient(circle at 92% 62%, rgba(125, 30, 52, 0.14), transparent 34%),
+      linear-gradient(180deg, #050609 0%, #0c0c10 40%, #06070a 100%);
+  }
+
+  .starfield,
+  .glass-lanes {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .starfield::before,
+  .starfield::after {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background-image:
+      radial-gradient(1px 1px at 12% 20%, rgba(242, 234, 216, 0.9), transparent),
+      radial-gradient(1px 1px at 36% 14%, rgba(240, 204, 130, 0.8), transparent),
+      radial-gradient(1px 1px at 62% 35%, rgba(242, 234, 216, 0.75), transparent),
+      radial-gradient(1.5px 1.5px at 74% 18%, rgba(240, 204, 130, 0.9), transparent),
+      radial-gradient(1px 1px at 85% 72%, rgba(242, 234, 216, 0.7), transparent),
+      radial-gradient(1px 1px at 24% 78%, rgba(240, 204, 130, 0.6), transparent),
+      radial-gradient(1px 1px at 49% 92%, rgba(242, 234, 216, 0.72), transparent);
+    background-size: 760px 760px;
+    animation: starDrift 190s linear infinite;
+  }
+
+  .starfield::after {
+    background-size: 1120px 1120px;
+    opacity: 0.42;
+    animation-duration: 280s;
+    animation-direction: reverse;
+  }
+
+  @keyframes starDrift {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-760px, 260px, 0); }
+  }
+
+  .moving-shard {
+    position: absolute;
+    width: clamp(160px, 18vw, 320px);
+    height: 1px;
+    right: -26vw;
+    background: linear-gradient(90deg, transparent, rgba(240, 204, 130, 0.75), transparent);
+    opacity: 0.48;
+    transform: rotate(-7deg);
+    animation: passLeft var(--duration) linear infinite;
+    animation-delay: var(--delay);
+  }
+
+  .moving-shard::before,
+  .moving-shard::after {
+    content: "";
+    position: absolute;
+    right: 18%;
+    width: 36%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(72, 161, 125, 0.72), transparent);
+  }
+
+  .moving-shard::before {
+    top: -26px;
+  }
+
+  .moving-shard::after {
+    top: 28px;
+    background: linear-gradient(90deg, transparent, rgba(189, 60, 88, 0.65), transparent);
+  }
+
+  .moving-shard:nth-child(1) { top: 18%; --duration: 18s; --delay: -6s; }
+  .moving-shard:nth-child(2) { top: 36%; --duration: 23s; --delay: -12s; opacity: 0.32; }
+  .moving-shard:nth-child(3) { top: 58%; --duration: 21s; --delay: -3s; }
+  .moving-shard:nth-child(4) { top: 76%; --duration: 26s; --delay: -18s; opacity: 0.28; }
+
+  @keyframes passLeft {
+    from { transform: translate3d(0, 0, 0) rotate(-7deg); }
+    to { transform: translate3d(-140vw, 0, 0) rotate(-7deg); }
+  }
+
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(18px, 5vw, 64px);
+    background: linear-gradient(180deg, rgba(5, 6, 9, 0.92), rgba(5, 6, 9, 0));
+    backdrop-filter: blur(10px);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--display);
+    font-size: 1.1rem;
+    letter-spacing: 0.28em;
+    color: var(--gold-bright);
+    text-transform: uppercase;
+  }
+
+  .brand-mark {
+    width: 9px;
+    height: 9px;
+    border: 1px solid var(--gold);
+    transform: rotate(45deg);
+    box-shadow: 0 0 18px rgba(240, 204, 130, 0.72);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: clamp(16px, 3vw, 34px);
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+  }
+
+  .nav-links a {
+    position: relative;
+    transition: color 0.25s ease;
+  }
+
+  .nav-links a:hover {
+    color: var(--gold-bright);
+  }
+
+  main {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero {
+    min-height: 100vh;
+    position: relative;
+    display: grid;
+    align-items: end;
+    padding: 106px clamp(18px, 5vw, 72px) 44px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(ellipse at 50% 18%, rgba(240, 204, 130, 0.11), transparent 38%),
+      radial-gradient(ellipse at 32% 58%, rgba(31, 90, 71, 0.22), transparent 48%),
+      linear-gradient(180deg, rgba(5, 6, 9, 0.1), rgba(5, 6, 9, 0.96));
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+    gap: clamp(34px, 7vw, 88px);
+    align-items: center;
+    width: min(1280px, 100%);
+    margin: 0 auto;
+    padding-bottom: 42px;
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 7;
+    min-width: 0;
+    max-width: 760px;
+  }
+
+  .hero-title {
+    margin-top: 18px;
+    font-family: var(--display);
+    font-size: clamp(4.2rem, 11.5vw, 10.8rem);
+    font-weight: 300;
+    line-height: 0.88;
+    letter-spacing: 0;
+    color: var(--paper);
+    text-shadow: 0 28px 80px rgba(0, 0, 0, 0.68);
+    text-wrap: balance;
+  }
+
+  .hero-title em {
+    display: inline-block;
+    color: var(--wine-bright);
+    font-style: italic;
+    font-weight: 300;
+    transform: translateY(-0.02em);
+  }
+
+  .hero-kr {
+    margin-top: 22px;
+    font-size: clamp(1.35rem, 2.6vw, 2.35rem);
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--gold-bright);
+    line-height: 1.28;
+  }
+
+  .hero-logline {
+    max-width: 620px;
+    margin-top: 24px;
+    color: var(--paper-dim);
+    font-size: clamp(1.02rem, 1.45vw, 1.18rem);
+    line-height: 1.85;
+  }
+
+  .hero-logline em {
+    color: var(--gold-bright);
+    font-style: normal;
+  }
+
+  .hero-actions {
+    position: relative;
+    z-index: 9;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 34px;
+  }
+
+  .hero-actions .btn {
+    background: rgba(5, 6, 9, 0.82);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+  }
+
+  .hero-actions .btn.primary {
+    background: var(--gold);
+  }
+
+  .hero-panel {
+    position: relative;
+    min-height: 560px;
+    border: 1px solid var(--line);
+    background:
+      linear-gradient(145deg, rgba(240, 204, 130, 0.13), transparent 24%),
+      linear-gradient(180deg, rgba(25, 80, 61, 0.5), rgba(8, 8, 10, 0.92));
+    box-shadow: 0 28px 100px var(--shadow);
+    overflow: hidden;
+  }
+
+  .hero-panel::before {
+    content: "";
+    position: absolute;
+    inset: 20px;
+    border: 1px solid rgba(240, 204, 130, 0.2);
+  }
+
+  .poster-figure {
+    position: absolute;
+    inset: 0;
+  }
+
+  .figure-body {
+    position: absolute;
+    bottom: -8%;
+    left: 50%;
+    width: 54%;
+    height: 72%;
+    transform: translateX(-50%);
+    border-radius: 46% 46% 0 0;
+    background:
+      radial-gradient(circle at 50% 10%, rgba(242, 234, 216, 0.42), transparent 9%),
+      linear-gradient(180deg, rgba(228, 217, 196, 0.22), rgba(10, 11, 12, 0.95));
+    filter: drop-shadow(0 0 42px rgba(31, 90, 71, 0.48));
+  }
+
+  .figure-body::before,
+  .figure-body::after {
+    content: "";
+    position: absolute;
+    width: 40%;
+    height: 72%;
+    bottom: 4%;
+    border: 1px solid rgba(240, 204, 130, 0.2);
+    background: linear-gradient(180deg, rgba(125, 30, 52, 0.16), transparent);
+  }
+
+  .figure-body::before {
+    left: -24%;
+    transform: rotate(-8deg);
+  }
+
+  .figure-body::after {
+    right: -24%;
+    transform: rotate(8deg);
+  }
+
+  .glass-crack {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(116deg, transparent 0 36%, rgba(240, 204, 130, 0.36) 36.2%, transparent 36.7%),
+      linear-gradient(64deg, transparent 0 47%, rgba(242, 234, 216, 0.26) 47.2%, transparent 47.8%),
+      linear-gradient(8deg, transparent 0 58%, rgba(72, 161, 125, 0.34) 58.2%, transparent 58.7%);
+    opacity: 0.8;
+  }
+
+  .poster-caption {
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    bottom: 28px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 18px;
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+  }
+
+  .poster-caption strong {
+    display: block;
+    color: var(--paper);
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .age-stamp {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--wine-bright);
+    color: var(--wine-bright);
+    font-family: var(--display);
+    font-size: 1.7rem;
+    transform: rotate(-8deg);
+  }
+
+  .flow-band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    overflow: hidden;
+    border-top: 1px solid rgba(240, 204, 130, 0.16);
+    border-bottom: 1px solid rgba(240, 204, 130, 0.16);
+    background: rgba(5, 6, 9, 0.28);
+    backdrop-filter: blur(8px);
+    opacity: 0.82;
+    pointer-events: none;
+  }
+
+  .flow-track {
+    width: max-content;
+    display: flex;
+    gap: 34px;
+    padding: 10px 0;
+    color: var(--paper-dim);
+    font-family: var(--sans);
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    animation: flowLeft 32s linear infinite;
+  }
+
+  .flow-track span:nth-child(2n) {
+    color: var(--gold-bright);
+  }
+
+  .flow-track span:nth-child(3n) {
+    color: var(--green-soft);
+  }
+
+  @keyframes flowLeft {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .section {
+    position: relative;
+    padding: clamp(76px, 11vw, 140px) clamp(18px, 5vw, 72px);
+  }
+
+  .container {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+  }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.82fr) minmax(280px, 1fr);
+    gap: clamp(24px, 5vw, 72px);
+    align-items: start;
+    margin-bottom: clamp(38px, 6vw, 76px);
+  }
+
+  .section-title {
+    margin-top: 12px;
+    font-family: var(--display);
+    font-size: clamp(2.8rem, 7vw, 6.8rem);
+    font-weight: 300;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+
+  .section-title em {
+    color: var(--gold-bright);
+    font-style: italic;
+  }
+
+  .section-copy {
+    max-width: 640px;
+    padding-top: 0.9rem;
+    color: var(--paper-dim);
+    font-size: 1.02rem;
+    line-height: 1.9;
+  }
+
+  .story-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.28fr);
+    gap: clamp(34px, 7vw, 88px);
+    align-items: start;
+  }
+
+  .story-quote {
+    position: sticky;
+    top: 110px;
+    padding-left: clamp(18px, 3vw, 32px);
+    border-left: 1px solid var(--line-strong);
+    color: var(--gold-bright);
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.22;
+  }
+
+  .story-quote .accent {
+    display: block;
+    margin-top: 0.35em;
+    color: var(--wine-bright);
+  }
+
+  .story-body {
+    max-width: 780px;
+  }
+
+  .story-step {
+    position: relative;
+    padding: 0 0 clamp(28px, 4vw, 46px) clamp(44px, 5vw, 72px);
+    border-bottom: 1px solid rgba(240, 204, 130, 0.11);
+  }
+
+  .story-step + .story-step {
+    margin-top: clamp(28px, 5vw, 54px);
+  }
+
+  .story-step::before {
+    content: attr(data-step);
+    position: absolute;
+    top: 0.15em;
+    left: 0;
+    color: var(--gold-bright);
+    font-family: var(--serif);
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-style: italic;
+    line-height: 1;
+    opacity: 0.85;
+  }
+
+  .story-step h3 {
+    max-width: 680px;
+    color: var(--paper);
+    font-family: var(--display);
+    font-size: clamp(1.7rem, 3vw, 2.65rem);
+    font-weight: 350;
+    line-height: 1.16;
+    text-wrap: balance;
+  }
+
+  .story-step p {
+    max-width: 720px;
+    margin-top: 14px;
+    color: var(--paper-dim);
+    font-size: 1.02rem;
+    line-height: 1.95;
+  }
+
+  .story-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: clamp(28px, 4vw, 46px);
+  }
+
+  .story-tags span {
+    padding: 0.35rem 0.82rem;
+    border: 1px solid rgba(240, 204, 130, 0.2);
+    color: var(--paper-muted);
+    font-family: var(--serif);
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
+  .cast-profiles,
+  .choice-grid,
+  .metrics-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .choice-grid,
+  .metrics-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .choice-card,
+  .metric-card {
+    position: relative;
+    min-height: 280px;
+    padding: 24px;
+    border: 1px solid rgba(240, 204, 130, 0.15);
+    background: rgba(242, 234, 216, 0.04);
+    overflow: hidden;
+  }
+
+  .cast-profiles {
+    gap: 0;
+    border-top: 1px solid rgba(240, 204, 130, 0.16);
+    border-bottom: 1px solid rgba(240, 204, 130, 0.16);
+  }
+
+  .cast-profile {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
+    gap: clamp(24px, 5vw, 70px);
+    align-items: stretch;
+    padding: clamp(28px, 5vw, 68px) 0;
+    border-bottom: 1px solid rgba(240, 204, 130, 0.12);
+  }
+
+  .cast-profile:last-child {
+    border-bottom: 0;
+  }
+
+  .cast-profile:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.42fr);
+  }
+
+  .cast-profile:nth-child(even) .profile-visual {
+    order: 2;
+  }
+
+  .profile-visual {
+    min-height: clamp(320px, 42vw, 520px);
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(160deg, rgba(240, 204, 130, 0.14), transparent 25%),
+      linear-gradient(180deg, var(--profile-tone), rgba(7, 8, 10, 0.96));
+  }
+
+  .profile-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, transparent 42%, rgba(5, 6, 9, 0.86)),
+      radial-gradient(ellipse at 50% 18%, rgba(242, 234, 216, 0.16), transparent 32%);
+  }
+
+  .profile-visual::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 22px;
+    bottom: 20px;
+    color: rgba(242, 234, 216, 0.2);
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 7vw, 6.5rem);
+    font-style: italic;
+    line-height: 0.8;
+  }
+
+  .profile-visual img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .profile-silhouette {
+    position: absolute;
+    left: 50%;
+    bottom: -8%;
+    width: 48%;
+    height: 78%;
+    transform: translateX(-50%);
+    border-radius: 48% 48% 0 0;
+    background: linear-gradient(180deg, rgba(242, 234, 216, 0.18), rgba(2, 3, 5, 0.88));
+    filter: drop-shadow(0 0 36px rgba(0, 0, 0, 0.44));
+  }
+
+  .profile-copy {
+    display: grid;
+    align-content: center;
+    padding: 0 clamp(0px, 2vw, 20px);
+  }
+
+  .profile-index {
+    color: var(--gold-bright);
+    font-family: var(--serif);
+    font-size: 0.86rem;
+    font-style: italic;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .profile-copy h3 {
+    margin-top: 16px;
+    color: var(--paper);
+    font-size: clamp(2.15rem, 5vw, 4.3rem);
+    font-weight: 800;
+    line-height: 1.02;
+  }
+
+  .profile-copy h3 em {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--paper-muted);
+    font-family: var(--serif);
+    font-size: clamp(1rem, 1.6vw, 1.3rem);
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+  }
+
+  .profile-copy p {
+    max-width: 680px;
+    margin-top: 22px;
+    color: var(--paper-dim);
+    font-size: 1rem;
+    line-height: 1.95;
+  }
+
+  .profile-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin-top: 30px;
+    border-top: 1px solid rgba(240, 204, 130, 0.14);
+    border-bottom: 1px solid rgba(240, 204, 130, 0.14);
+  }
+
+  .profile-facts div {
+    padding: 14px 16px;
+    border-right: 1px solid rgba(240, 204, 130, 0.12);
+  }
+
+  .profile-facts div:last-child {
+    border-right: 0;
+  }
+
+  .profile-facts span {
+    display: block;
+    color: var(--paper-muted);
+    font-family: var(--sans);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .profile-facts strong {
+    display: block;
+    margin-top: 4px;
+    color: var(--paper);
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  .profile-quote {
+    margin-top: 28px;
+    padding-left: 18px;
+    border-left: 1px solid var(--line-strong);
+    color: var(--gold-bright);
+    font-family: var(--serif);
+    font-size: clamp(1.12rem, 2vw, 1.55rem);
+    font-style: italic;
+    line-height: 1.55;
+  }
+
+  .arc {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.02), transparent 24%),
+      rgba(0, 0, 0, 0.24);
+  }
+
+  .chapter-strip {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(180px, 1fr));
+    gap: 0;
+    overflow-x: auto;
+    border: 1px solid rgba(240, 204, 130, 0.16);
+  }
+
+  .chapter {
+    min-height: 300px;
+    padding: 22px;
+    border-right: 1px solid rgba(240, 204, 130, 0.14);
+    background: linear-gradient(180deg, rgba(242, 234, 216, 0.04), rgba(242, 234, 216, 0.01));
+  }
+
+  .chapter:last-child {
+    border-right: 0;
+  }
+
+  .chapter small {
+    font-family: var(--sans);
+    color: var(--paper-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .chapter h3 {
+    margin-top: 28px;
+    font-family: var(--display);
+    font-size: 1.72rem;
+    font-weight: 350;
+    line-height: 1.18;
+    text-wrap: balance;
+  }
+
+  .chapter p {
+    margin-top: 18px;
+    color: var(--paper-dim);
+    font-size: 0.94rem;
+  }
+
+  .choice-card {
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+
+  .choice-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--line-strong);
+    background: rgba(242, 234, 216, 0.07);
+  }
+
+  .choice-card h3 {
+    margin-top: 16px;
+    font-family: var(--display);
+    font-size: 2rem;
+    font-weight: 350;
+    line-height: 1.16;
+    text-wrap: balance;
+  }
+
+  .choice-card p {
+    margin-top: 18px;
+    color: var(--paper-dim);
+  }
+
+  .quote-section {
+    min-height: 72vh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at center, rgba(31, 90, 71, 0.18), transparent 54%),
+      linear-gradient(180deg, transparent, rgba(125, 30, 52, 0.09), transparent);
+  }
+
+  .big-quote {
+    width: min(860px, 100%);
+    font-family: var(--display);
+    font-size: clamp(2.4rem, 6vw, 5.4rem);
+    font-weight: 300;
+    line-height: 1.16;
+    text-wrap: balance;
+  }
+
+  .big-quote em {
+    color: var(--wine-bright);
+    font-style: italic;
+  }
+
+  .quote-caption {
+    margin-top: 24px;
+    color: var(--paper-muted);
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .metric-card {
+    min-height: 178px;
+  }
+
+  .metric-value {
+    margin-top: 22px;
+    font-family: var(--display);
+    font-size: clamp(3rem, 7vw, 5rem);
+    line-height: 0.9;
+    color: var(--paper);
+  }
+
+  .metric-card p {
+    margin-top: 18px;
+    color: var(--paper-dim);
+  }
+
+  .final-cta {
+    padding-bottom: clamp(86px, 12vw, 160px);
+  }
+
+  .signup {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(148px, auto);
+    gap: 12px;
+    max-width: 660px;
+    margin-top: 34px;
+  }
+
+  .signup input {
+    min-height: 52px;
+    width: 100%;
+    padding: 0 18px;
+    border: 1px solid rgba(240, 204, 130, 0.2);
+    background: rgba(0, 0, 0, 0.36);
+    color: var(--paper);
+    outline: none;
+  }
+
+  .signup input:focus {
+    border-color: var(--gold-bright);
+  }
+
+  .form-note {
+    min-height: 28px;
+    margin-top: 14px;
+    color: var(--green-soft);
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  @media (max-width: 980px) {
+    .hero-grid,
+    .section-head {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-panel {
+      min-height: 440px;
+      order: -1;
+    }
+
+    .choice-grid,
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .story-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .story-quote {
+      position: relative;
+      top: auto;
+    }
+
+    .cast-profile,
+    .cast-profile:nth-child(even) {
+      grid-template-columns: 1fr;
+    }
+
+    .cast-profile:nth-child(even) .profile-visual {
+      order: 0;
+    }
+
+    .profile-facts {
+      grid-template-columns: 1fr;
+    }
+
+    .profile-facts div {
+      border-right: 0;
+      border-bottom: 1px solid rgba(240, 204, 130, 0.12);
+    }
+
+    .profile-facts div:last-child {
+      border-bottom: 0;
+    }
+
+    .nav-links {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .nav {
+      height: 64px;
+    }
+
+    .brand {
+      font-size: 0.92rem;
+      letter-spacing: 0.18em;
+    }
+
+    .hero {
+      padding-top: 84px;
+      padding-bottom: 72px;
+    }
+
+    .hero-title {
+      font-size: clamp(3.45rem, 19vw, 5.2rem);
+      line-height: 0.94;
+    }
+
+    .hero-kr {
+      letter-spacing: 0.08em;
+    }
+
+    .story-step {
+      padding-left: 40px;
+    }
+
+    .signup {
+      grid-template-columns: 1fr;
+    }
+
+    .btn {
+      width: 100%;
+      letter-spacing: 0.04em;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="entry-gate" id="entryGate" aria-modal="true" role="dialog" aria-labelledby="gateTitle">
+  <div class="gate-panel">
+    <div class="gate-kicker">Maison Celine Contract File</div>
+    <h1 class="gate-title" id="gateTitle">Glass <em>Garden</em></h1>
+    <p class="gate-subtitle">카메라가 켜지면, 거짓 연인은 진짜처럼 웃어야 한다.</p>
+    <div class="gate-actions">
+      <button class="btn ghost" type="button" id="exitButton">아니오</button>
+      <button class="btn primary" type="button" id="enterButton">예, 들어간다</button>
+    </div>
+  </div>
+</div>
+
+<div class="site-shell">
+  <div class="starfield"></div>
+  <div class="glass-lanes" aria-hidden="true">
+    <span class="moving-shard"></span>
+    <span class="moving-shard"></span>
+    <span class="moving-shard"></span>
+    <span class="moving-shard"></span>
+  </div>
+
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="brand" href="#top"><span class="brand-mark"></span>Glass Garden</a>
+    <div class="nav-links">
+      <a href="#story">Story</a>
+      <a href="#cast">Cast</a>
+      <a href="#arc">Arc</a>
+      <a href="#test">Test</a>
+      <a href="#reserve">Preview</a>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">A Fashion Contract Romance</div>
+          <h2 class="hero-title" id="heroTitle">Glass<br><em>Garden</em></h2>
+          <div class="hero-kr">유리정원</div>
+          <p class="hero-logline">
+            한물간 모델 <em>한지오</em>는 메종 셀린느의 캠페인에 발탁된다.
+            조건은 단 하나. 재벌 후계자 <em>차이안의 공식 연인</em>으로 6개월을 살아갈 것.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#story">첫 장면 보기</a>
+            <a class="btn" href="#test">A/B/C 시안</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Glass Garden poster">
+          <div class="poster-figure">
+            <div class="figure-body"></div>
+            <div class="glass-crack"></div>
+          </div>
+          <div class="poster-caption">
+            <div>
+              <strong>Campaign No. 001</strong>
+              Contract lover / hidden wound / final runway
+            </div>
+            <div class="age-stamp">17</div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="flow-band" aria-hidden="true">
+        <div class="flow-track">
+          <span>ONE CONTRACT</span><span>TWO NAMES</span><span>OFFICIAL LOVER</span><span>GLASSHOUSE</span><span>FINAL CAMPAIGN</span><span>WHO LIED FIRST</span>
+          <span>ONE CONTRACT</span><span>TWO NAMES</span><span>OFFICIAL LOVER</span><span>GLASSHOUSE</span><span>FINAL CAMPAIGN</span><span>WHO LIED FIRST</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="story">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Story Descent</div>
+            <h2 class="section-title">계약은 아래로 <em>내려간다.</em></h2>
+          </div>
+          <p class="section-copy">
+            첫 화면은 강하게 잡아당기고, 입장 이후에는 장면이 하나씩 열리며 관계의 온도가 바뀐다.
+            계약서, 카메라, 유리온실, 과거의 흉터가 순서대로 드러나는 구조다.
+          </p>
+        </div>
+
+        <div class="story-grid">
+          <div class="story-quote reveal">
+            "당신을 산 게 아니야."
+            <span class="accent">"내가 당신을 좋아하게 됐어."</span>
+          </div>
+
+          <div class="story-body reveal">
+            <article class="story-step" data-step="I">
+              <h3>캠페인 미팅에서 받은 두 번째 이름</h3>
+              <p>5년 전 데뷔를 빼앗기고 업계 밖으로 밀려난 한지오는, 메종 셀린느의 신년 캠페인이라는 거대한 기회를 받는다. 하지만 그 자리는 단순한 모델 일이 아니었다. 계약서의 마지막 줄에는 한지오가 아니라 차이안의 공식 연인으로 불릴 이름이 적혀 있다.</p>
+            </article>
+
+            <article class="story-step" data-step="II">
+              <h3>거짓 연애는 너무 정확해서 더 위험하다</h3>
+              <p>재벌 그룹의 외아들이자 메종의 부사장 차이안. 그가 정략결혼을 피하기 위해 필요한 것은 사랑이 아니라, 사랑처럼 보이는 장면이었다. 6개월의 위장 계약, 거액의 위약금, 기자들 앞에서만 유효해야 할 손길이 조금씩 사적인 영역으로 넘어온다.</p>
+            </article>
+
+            <article class="story-step" data-step="III">
+              <h3>디자이너는 둘의 균열을 옷으로 읽는다</h3>
+              <p>수석 디자이너 서윤은 지오의 흉터와 이안의 목적을 동시에 알아본다. 그는 둘 사이에 끼어든 방해자인지, 아니면 가장 먼저 진실을 본 목격자인지 알 수 없다. 런웨이에 오를 의상은 아름답지만, 솔기마다 폭로가 숨어 있다.</p>
+            </article>
+
+            <article class="story-step" data-step="IV">
+              <h3>유리온실에서 첫 번째 진심이 깨진다</h3>
+              <p>묻어둔 사진 한 장이 공개되고, 위장 연애는 방패가 아니라 칼이 된다. 지오는 처음으로 계약을 끝낼 수 있는데도 끝내지 않는다. 그 선택이 사랑인지, 복수인지, 아니면 자기 이름을 되찾기 위한 마지막 무대인지는 아직 아무도 모른다.</p>
+            </article>
+
+            <div class="story-tags" aria-label="story tags">
+              <span>Contract Romance</span>
+              <span>Fashion Noir</span>
+              <span>Slow Burn</span>
+              <span>Scandal</span>
+              <span>Hurt / Comfort</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cast">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Dramatis Personae</div>
+            <h2 class="section-title">서로를 망치는 <em>세 사람.</em></h2>
+          </div>
+          <p class="section-copy">
+            관계는 복잡하지만 첫눈에는 명확해야 한다. 모델, 후계자, 디자이너. 각자 상대에게 원하는 것이 다르고, 잃고 싶지 않은 것도 다르다.
+          </p>
+        </div>
+
+        <div class="cast-profiles">
+          <article class="cast-profile reveal" style="--profile-tone: #273b38;">
+            <div class="profile-visual" data-label="Jio" aria-label="한지오 캐릭터 이미지 자리">
+              <div class="profile-silhouette"></div>
+            </div>
+            <div class="profile-copy">
+              <div class="profile-index">No. 01 / False Lover</div>
+              <h3>한지오 <em>Han Ji-oh</em></h3>
+              <p>다시 무대에 서기 위해 거짓 연애를 받아들인다. 그는 표정을 숨기는 데 능하지만, 한 번 믿은 사람을 쉽게 버리지 못한다. 그래서 이번 계약은 일보다 위험해진다.</p>
+              <div class="profile-facts">
+                <div><span>Age</span><strong>26</strong></div>
+                <div><span>Position</span><strong>Model</strong></div>
+                <div><span>Weakness</span><strong>믿음</strong></div>
+              </div>
+              <div class="profile-quote">"거절을 잘 못해요. 그래서 또 후회할 것 같은데, 이번엔 도망치지 않을 거예요."</div>
+            </div>
+          </article>
+
+          <article class="cast-profile reveal" style="--profile-tone: #1b2f29;">
+            <div class="profile-visual" data-label="Ian" aria-label="차이안 캐릭터 이미지 자리">
+              <div class="profile-silhouette"></div>
+            </div>
+            <div class="profile-copy">
+              <div class="profile-index">No. 02 / Contract Owner</div>
+              <h3>차이안 <em>Cha Ian</em></h3>
+              <p>브랜드와 집안을 지키기 위해 사랑까지 기획한다. 모든 행동이 계산처럼 보이는 남자지만, 지오 앞에서는 자주 침묵한다. 그 침묵이 그의 첫 번째 실수다.</p>
+              <div class="profile-facts">
+                <div><span>Age</span><strong>29</strong></div>
+                <div><span>Position</span><strong>Vice President</strong></div>
+                <div><span>Weakness</span><strong>상실</strong></div>
+              </div>
+              <div class="profile-quote">"처음엔 당신을 산 거였어. 하지만 지금은 사고 싶은 게 아니야. 잃기 싫어진 거지."</div>
+            </div>
+          </article>
+
+          <article class="cast-profile reveal" style="--profile-tone: #3b2b1f;">
+            <div class="profile-visual" data-label="Yoon" aria-label="서윤 캐릭터 이미지 자리">
+              <div class="profile-silhouette"></div>
+            </div>
+            <div class="profile-copy">
+              <div class="profile-index">No. 03 / Witness</div>
+              <h3>서윤 <em>Seo Yoon</em></h3>
+              <p>옷의 결을 통해 사람의 거짓말을 본다. 지오를 구하려는 건지, 이안을 무너뜨리려는 건지 끝까지 알 수 없다. 다만 그는 누구보다 먼저 두 사람의 균열을 눈치챈다.</p>
+              <div class="profile-facts">
+                <div><span>Age</span><strong>28</strong></div>
+                <div><span>Position</span><strong>Designer</strong></div>
+                <div><span>Weakness</span><strong>진실</strong></div>
+              </div>
+              <div class="profile-quote">"내가 만든 옷 중에 가장 잘 어울리는 사람이 너야. 그런데 그게 옷 때문인지, 사람 때문인지 모르겠어."</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section arc" id="arc">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Episode Arc</div>
+            <h2 class="section-title">런웨이까지 <em>여섯 장면.</em></h2>
+          </div>
+          <p class="section-copy">
+            아래로 내려갈수록 시각적 화려함보다 감정의 압력이 커지도록 구성했다.
+            각 장면은 랜딩에서 짧게 보여주고, 실제 서비스에서는 인터랙션 단위로 확장할 수 있다.
+          </p>
+        </div>
+
+        <div class="chapter-strip reveal" aria-label="chapter timeline">
+          <article class="chapter">
+            <small>CH 01</small>
+            <h3>계약서의 마지막 줄</h3>
+            <p>지오는 메종 로비에서 자신의 이름이 사라진 계약서를 본다.</p>
+          </article>
+          <article class="chapter">
+            <small>CH 02</small>
+            <h3>공식 연인의 첫 사진</h3>
+            <p>이안은 기자들 앞에서 지오를 완벽히 보호하고, 완벽히 가둔다.</p>
+          </article>
+          <article class="chapter">
+            <small>CH 03</small>
+            <h3>피팅룸의 침묵</h3>
+            <p>서윤은 치수를 재는 척하며 두 사람이 숨긴 균열을 짚는다.</p>
+          </article>
+          <article class="chapter">
+            <small>CH 04</small>
+            <h3>유리온실의 밤</h3>
+            <p>카메라 없는 공간에서 처음으로 거짓말이 쓸모없어진다.</p>
+          </article>
+          <article class="chapter">
+            <small>CH 05</small>
+            <h3>5년 전 사진</h3>
+            <p>누군가의 폭로로 계약은 스캔들이 되고, 선택은 공개 처형이 된다.</p>
+          </article>
+          <article class="chapter">
+            <small>CH 06</small>
+            <h3>마지막 런웨이</h3>
+            <p>지오는 누구의 연인도 아닌 이름으로 조명 아래에 선다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote-section">
+      <div class="container reveal">
+        <p class="big-quote">"당신은 나를 구하려고 고용한 게 아니야. <em>들키지 않으려고</em> 고용한 거지."</p>
+        <p class="quote-caption">Glass Garden / First Turn Copy</p>
+      </div>
+    </section>
+
+    <section class="section" id="test">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Landing A/B/C</div>
+            <h2 class="section-title">어떤 문장이 <em>먼저 붙잡는가.</em></h2>
+          </div>
+          <p class="section-copy">
+            같은 서사를 유지하되 첫 반응을 다르게 측정한다. 비주얼은 동일한 유리/별/계약 무드로 묶고, 유입 문장만 분리한다.
+          </p>
+        </div>
+
+        <div class="choice-grid">
+          <article class="choice-card reveal">
+            <div>
+              <div class="choice-label">A / Contract</div>
+              <h3>거짓 연애 계약서에 내 이름이 없었다</h3>
+            </div>
+            <p>설정 이해가 빠르고 후킹이 강한 계약형 카피.</p>
+          </article>
+          <article class="choice-card reveal">
+            <div>
+              <div class="choice-label">B / Emotion</div>
+              <h3>카메라가 꺼진 뒤에도 그는 손을 놓지 않았다</h3>
+            </div>
+            <p>관계의 긴장과 설렘을 먼저 보여주는 감정형 카피.</p>
+          </article>
+          <article class="choice-card reveal">
+            <div>
+              <div class="choice-label">C / Mystery</div>
+              <h3>5년 전 사진을 보낸 사람은 셋 중 하나다</h3>
+            </div>
+            <p>스캔들, 비밀, 범인 찾기 반응을 보는 미스터리형 카피.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final-cta" id="reserve">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Free Preview</div>
+            <h2 class="section-title">첫 장면을 <em>먼저 받아보기.</em></h2>
+          </div>
+          <div>
+            <p class="section-copy">
+              닫힌 모집처럼 문턱을 높이지 않고, 첫 장면과 업데이트를 먼저 받아보는 가벼운 행동으로 설계한다.
+              클릭, 체류, 카피별 전환율을 비교하기 위한 랜딩 실험으로 사용한다.
+            </p>
+            <form class="signup" id="signupForm">
+              <input type="email" name="email" placeholder="your.email@example.com" aria-label="Email address" required>
+              <button class="btn primary" type="submit">첫 장면 받기</button>
+            </form>
+            <p class="form-note" id="formNote" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <article class="metric-card reveal">
+            <div class="metric-label">Chapters</div>
+            <div class="metric-value">18</div>
+            <p>계약에서 런웨이까지 이어지는 메인 시즌.</p>
+          </article>
+          <article class="metric-card reveal">
+            <div class="metric-label">Core Cast</div>
+            <div class="metric-value">03</div>
+            <p>모델, 후계자, 디자이너의 삼각 압력.</p>
+          </article>
+          <article class="metric-card reveal">
+            <div class="metric-label">Copy Tests</div>
+            <div class="metric-value">A/B/C</div>
+            <p>계약형, 감정형, 미스터리형 유입 테스트.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  const entryGate = document.querySelector("#entryGate");
+  const enterButton = document.querySelector("#enterButton");
+  const exitButton = document.querySelector("#exitButton");
+  const signupForm = document.querySelector("#signupForm");
+  const formNote = document.querySelector("#formNote");
+
+  enterButton.addEventListener("click", () => {
+    entryGate.classList.add("is-hidden");
+    window.setTimeout(() => {
+      document.querySelector("#top").scrollIntoView({ behavior: "smooth" });
+    }, 120);
+  });
+
+  exitButton.addEventListener("click", () => {
+    entryGate.querySelector(".gate-subtitle").textContent = "아직 문밖에 머물러 있습니다.";
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      revealObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.16 });
+
+  document.querySelectorAll(".reveal").forEach((item, index) => {
+    item.style.transitionDelay = `${Math.min(index % 4, 3) * 70}ms`;
+    revealObserver.observe(item);
+  });
+
+  signupForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    formNote.textContent = "첫 장면 알림 신청이 완료되었습니다.";
+    signupForm.querySelector("button").textContent = "신청 완료";
+  });
+</script>
+</body>
+</html>
