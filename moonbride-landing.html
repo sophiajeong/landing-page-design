@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>달빛 신부 — The Moonbride · 인터렉티브 미스터리 로맨스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;0,6..96,800;1,6..96,400;1,6..96,500;1,6..96,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Italianno&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Serif+KR:wght@200;300;400;500;600;700&family=Song+Myung&family=Special+Elite&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  /* ============================================================
+     DESIGN TOKENS — Midnight Maritime
+     ============================================================ */
+  :root {
+    /* Deep midnight blues */
+    --midnight: #07101f;
+    --midnight-deep: #03070e;
+    --midnight-mid: #0e1a30;
+    --midnight-light: #1a2a44;
+    --tide: #1d3550;
+    --tide-foam: #2a4a6b;
+
+    /* Silver & pearl */
+    --pearl: #e6e8ee;
+    --silver: #b8bdc8;
+    --silver-dim: #6e7689;
+    --moonlight: #d8dde8;
+    --thread: #c2c8d4;
+
+    /* Brass / lantern accent */
+    --brass: #b8895b;
+    --brass-bright: #d4a373;
+    --brass-dim: #7a5a3b;
+
+    /* Aurora highlight */
+    --aurora: #7fbfb5;
+    --aurora-dim: #4a8a82;
+
+    /* Crimson (danger / killer) */
+    --crimson: #8e1f30;
+    --crimson-deep: #5a121e;
+    --crimson-silk: #a82a3e;
+
+    /* Ink */
+    --ink: #0a0f1a;
+    --ink-soft: #1d2638;
+
+    /* Fonts */
+    --display: "Bodoni Moda", "Nanum Myeongjo", serif;
+    --body-en: "EB Garamond", "Noto Serif KR", serif;
+    --ko-display: "Nanum Myeongjo", "Song Myung", "Bodoni Moda", serif;
+    --ko-body: "Noto Serif KR", "EB Garamond", serif;
+    --script: "Italianno", cursive;
+    --type: "Special Elite", monospace;
+  }
+
+  /* ============================================================
+     RESET & BASE
+     ============================================================ */
+  *, *::before, *::after {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--midnight);
+    color: var(--pearl);
+    font-family: var(--ko-body);
+    font-weight: 400;
+    line-height: 1.7;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+  }
+
+  /* Subtle noise texture */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.85  0 0 0 0 0.88  0 0 0 0 0.95  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 100;
+    mix-blend-mode: screen;
+  }
+
+  /* Vignette */
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(3,7,14,0.5) 85%, var(--midnight-deep) 130%);
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  ::selection {
+    background: var(--brass);
+    color: var(--midnight-deep);
+  }
+
+  /* ============================================================
+     UTILITIES
+     ============================================================ */
+  .eyebrow {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(0.78rem, 0.95vw, 0.95rem);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--brass-bright);
+    margin-bottom: 1.5rem;
+    display: inline-block;
+  }
+
+  .eyebrow::before,
+  .eyebrow::after {
+    content: "✦";
+    color: var(--silver-dim);
+    margin: 0 0.8rem;
+    font-size: 0.6em;
+    vertical-align: middle;
+    opacity: 0.6;
+  }
+
+  /* ============================================================
+     TIDE MARQUEE
+     ============================================================ */
+  .tide-bar {
+    background: linear-gradient(180deg, var(--midnight-deep), var(--midnight));
+    color: var(--pearl);
+    border-top: 1px solid var(--brass-dim);
+    border-bottom: 1px solid var(--brass-dim);
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+    padding: 0.55rem 0;
+    font-family: var(--type);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+  }
+
+  .tide-bar .label {
+    background: var(--brass);
+    color: var(--midnight-deep);
+    padding: 0.45rem 1.2rem;
+    font-weight: 700;
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    letter-spacing: 0.22em;
+    font-family: var(--type);
+    font-size: 0.7rem;
+  }
+
+  .tide-bar .marquee-wrap {
+    overflow: hidden;
+    margin-left: 11rem;
+  }
+
+  .tide-bar .marquee {
+    display: flex;
+    gap: 4rem;
+    white-space: nowrap;
+    animation: marquee 60s linear infinite;
+  }
+
+  .tide-bar .marquee span {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--pearl);
+  }
+
+  .tide-bar .moon {
+    color: var(--brass-bright);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  header.site-header {
+    position: relative;
+    padding: 2rem 4vw 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .crest {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .crest svg {
+    width: 38px; height: 38px;
+    color: var(--brass-bright);
+  }
+
+  .crest .text {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 0.85rem;
+    letter-spacing: 0.35em;
+    color: var(--silver);
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .crest .text small {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--silver-dim);
+    letter-spacing: 0.25em;
+    margin-top: 0.2rem;
+    font-style: normal;
+  }
+
+  nav.site-nav {
+    display: flex;
+    gap: 2.5rem;
+    font-family: var(--body-en);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--silver);
+  }
+
+  nav.site-nav a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  nav.site-nav a:hover { color: var(--brass-bright); }
+
+  nav.site-nav a::after {
+    content: "";
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--brass-bright);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  nav.site-nav a:hover::after { transform: scaleX(1); }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero {
+    position: relative;
+    min-height: 92vh;
+    padding: 6vh 4vw 8vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Large moon in background */
+  .hero-moon {
+    position: absolute;
+    right: -8vw;
+    top: 0;
+    width: 75vh;
+    height: 75vh;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--moonlight) 0%, var(--silver) 35%, var(--silver-dim) 70%, transparent 90%);
+    opacity: 0.12;
+    filter: blur(2px);
+    z-index: 0;
+    animation: moonGlow 8s ease-in-out infinite;
+  }
+
+  @keyframes moonGlow {
+    0%, 100% { opacity: 0.12; transform: scale(1); }
+    50% { opacity: 0.18; transform: scale(1.03); }
+  }
+
+  /* Crater detail (subtle) */
+  .hero-moon::before,
+  .hero-moon::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--silver-dim) 0%, transparent 70%);
+    opacity: 0.4;
+  }
+  .hero-moon::before {
+    width: 18%; height: 18%;
+    top: 25%; left: 30%;
+  }
+  .hero-moon::after {
+    width: 12%; height: 12%;
+    bottom: 30%; right: 25%;
+  }
+
+  /* Lighthouse silhouette */
+  .hero-lighthouse {
+    position: absolute;
+    left: 8%;
+    bottom: 0;
+    width: 60px;
+    height: 220px;
+    color: var(--midnight-light);
+    opacity: 0.55;
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    font-family: var(--type);
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--brass-bright);
+    opacity: 0.9;
+    flex-wrap: wrap;
+  }
+
+  .hero-meta .dot {
+    width: 4px; height: 4px;
+    background: var(--brass);
+    border-radius: 50%;
+  }
+
+  h1.hero-title {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(3.5rem, 12vw, 12rem);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    margin-bottom: 0.5rem;
+    color: var(--pearl);
+    position: relative;
+  }
+
+  h1.hero-title .line1 {
+    display: block;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--silver);
+    font-size: 0.32em;
+    letter-spacing: 0.6em;
+    margin-bottom: 1rem;
+    margin-left: 0.5em;
+  }
+
+  h1.hero-title .line2 {
+    display: block;
+    color: var(--pearl);
+  }
+
+  h1.hero-title .line2 .em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--brass-bright);
+    position: relative;
+  }
+
+  h1.hero-title .line2 .em::after {
+    content: "";
+    position: absolute;
+    left: -0.05em; right: -0.05em;
+    bottom: 0.18em;
+    height: 2px;
+    background: var(--brass-bright);
+    opacity: 0.3;
+  }
+
+  .hero-korean {
+    font-family: var(--ko-display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 3.2vw, 2.8rem);
+    color: var(--brass-bright);
+    letter-spacing: 0.4em;
+    margin-top: 2.5rem;
+    padding-left: 12vw;
+    position: relative;
+  }
+
+  .hero-korean::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 50%;
+    width: 10vw;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--brass));
+    transform: translateY(-50%);
+  }
+
+  .hero-korean::after {
+    content: "✦";
+    position: absolute;
+    left: 9.5vw;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--brass-bright);
+    font-size: 0.5em;
+  }
+
+  .hero-tagline {
+    max-width: 600px;
+    margin-top: 3.5rem;
+    margin-left: auto;
+    padding-right: 2vw;
+    text-align: right;
+    font-family: var(--ko-body);
+    font-size: clamp(1rem, 1.25vw, 1.15rem);
+    color: var(--silver);
+    line-height: 1.95;
+    font-style: italic;
+  }
+
+  .hero-tagline strong {
+    color: var(--pearl);
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  .hero-tagline .signature {
+    display: block;
+    margin-top: 1.5rem;
+    font-family: var(--script);
+    font-size: 1.9rem;
+    color: var(--brass-bright);
+    font-style: normal;
+    line-height: 1;
+  }
+
+  /* Hero CTAs */
+  .hero-cta {
+    margin-top: 4rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: linear-gradient(180deg, var(--brass-bright), var(--brass-dim));
+    color: var(--midnight-deep);
+    padding: 1.2rem 3rem;
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.15em;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 0 0 1px var(--brass-bright) inset,
+      0 0 0 3px var(--midnight) inset,
+      0 0 0 4px var(--brass-dim) inset,
+      0 20px 50px -10px rgba(0, 0, 0, 0.8);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px var(--brass-bright) inset,
+      0 0 0 3px var(--midnight) inset,
+      0 0 0 4px var(--brass-bright) inset,
+      0 25px 60px -10px rgba(0, 0, 0, 0.9),
+      0 0 70px -10px rgba(184, 137, 91, 0.5);
+  }
+
+  .btn-primary .ko {
+    font-family: var(--ko-display);
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--pearl);
+    padding: 1.2rem 0;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 1rem;
+    letter-spacing: 0.22em;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    border-bottom: 1px solid var(--silver-dim);
+    transition: all 0.3s;
+  }
+
+  .btn-secondary:hover {
+    color: var(--brass-bright);
+    border-bottom-color: var(--brass-bright);
+  }
+
+  /* ============================================================
+     PREMISE — Forgotten Night
+     ============================================================ */
+  .premise {
+    padding: 10rem 4vw;
+    position: relative;
+    background: linear-gradient(180deg, var(--midnight) 0%, var(--midnight-deep) 100%);
+  }
+
+  .premise::before {
+    content: "";
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    right: 5%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--brass-dim), transparent);
+    opacity: 0.5;
+  }
+
+  .premise-grid {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .premise-text h2 {
+    font-family: var(--ko-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    line-height: 1.3;
+    color: var(--pearl);
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .premise-text h2 em {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--brass-bright);
+    font-weight: 400;
+  }
+
+  .premise-text p {
+    color: var(--silver);
+    margin-bottom: 1.5rem;
+    font-size: 1.08rem;
+    line-height: 1.95;
+  }
+
+  .premise-text p .accent {
+    color: var(--brass-bright);
+    font-style: italic;
+    font-family: var(--body-en);
+  }
+
+  .premise-text p .silver-thread {
+    color: var(--moonlight);
+    text-decoration: underline;
+    text-decoration-color: var(--silver-dim);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    font-weight: 500;
+  }
+
+  /* Right side: the Mark reveal card */
+  .mark-card {
+    background: linear-gradient(160deg, var(--midnight-light) 0%, var(--midnight-mid) 100%);
+    padding: 0;
+    border: 1px solid var(--tide-foam);
+    position: relative;
+    transform: rotate(1.5deg);
+    transition: transform 0.5s ease;
+    overflow: hidden;
+  }
+
+  .mark-card:hover { transform: rotate(0deg) scale(1.02); }
+
+  .mark-card .scroll-top {
+    background: var(--midnight-deep);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--brass-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mark-card .scroll-top .case-no {
+    font-family: var(--type);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--brass-bright);
+  }
+
+  .mark-card .scroll-top .status {
+    font-family: var(--type);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--crimson-silk);
+  }
+
+  .mark-card-body {
+    padding: 2.5rem 2.5rem 3rem;
+    text-align: center;
+  }
+
+  .mark-card h4 {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--silver);
+    font-size: 0.85rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .mark-card h3 {
+    font-family: var(--ko-display);
+    font-weight: 800;
+    color: var(--pearl);
+    font-size: 1.5rem;
+    letter-spacing: 0.3em;
+    margin-bottom: 2.5rem;
+  }
+
+  /* The silver thread mark illustration */
+  .silver-mark {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 2rem;
+    position: relative;
+  }
+
+  .silver-mark svg {
+    width: 100%; height: 100%;
+    color: var(--moonlight);
+    filter: drop-shadow(0 0 12px rgba(216, 221, 232, 0.4));
+  }
+
+  .silver-mark .pulse {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--silver) 0%, transparent 60%);
+    opacity: 0.2;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.1; transform: scale(0.9); }
+    50% { opacity: 0.25; transform: scale(1.05); }
+  }
+
+  .mark-card-body p {
+    font-family: var(--ko-body);
+    color: var(--silver);
+    font-size: 0.95rem;
+    line-height: 1.85;
+    font-style: italic;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .mark-card-body .footnote {
+    margin-top: 1.5rem;
+    font-family: var(--script);
+    color: var(--brass-bright);
+    font-size: 1.5rem;
+    line-height: 1;
+    transform: rotate(-2deg);
+  }
+
+  /* ============================================================
+     TROPE TAGS
+     ============================================================ */
+  .tropes {
+    padding: 8rem 4vw;
+    background: var(--midnight-deep);
+    position: relative;
+    text-align: center;
+  }
+
+  .tropes-header {
+    max-width: 900px;
+    margin: 0 auto 4rem;
+  }
+
+  .tropes-header h2 {
+    font-family: var(--ko-display);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    color: var(--pearl);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .tropes-header h2 em {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--brass-bright);
+    font-weight: 400;
+  }
+
+  .tropes-header p {
+    color: var(--silver);
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+
+  .tag-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem;
+  }
+
+  .tag {
+    font-family: var(--ko-body);
+    font-size: 0.95rem;
+    padding: 0.7rem 1.4rem;
+    border: 1px solid var(--silver-dim);
+    color: var(--silver);
+    background: transparent;
+    border-radius: 999px;
+    transition: all 0.3s;
+    letter-spacing: 0.02em;
+  }
+
+  .tag.hot {
+    background: linear-gradient(180deg, var(--brass-dim), var(--brass-bright));
+    color: var(--midnight-deep);
+    font-weight: 700;
+    border-color: var(--brass-bright);
+  }
+
+  .tag.danger {
+    background: var(--crimson-deep);
+    color: var(--pearl);
+    border-color: var(--crimson);
+  }
+
+  .tag:hover {
+    transform: translateY(-2px);
+    border-color: var(--brass-bright);
+    color: var(--brass-bright);
+  }
+
+  .tag.hot:hover, .tag.danger:hover { color: var(--pearl); }
+
+  /* ============================================================
+     THE THREE MYSTERIES
+     ============================================================ */
+  .mysteries {
+    padding: 10rem 4vw;
+    background:
+      radial-gradient(ellipse at top, var(--midnight-mid) 0%, transparent 60%),
+      var(--midnight);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mysteries::before {
+    content: "MYSTERIA";
+    position: absolute;
+    top: 2rem;
+    left: -2rem;
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: clamp(10rem, 22vw, 26rem);
+    color: var(--midnight-light);
+    opacity: 0.4;
+    letter-spacing: -0.04em;
+    line-height: 0.8;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .mysteries-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 6rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .mysteries-header h2 {
+    font-family: var(--ko-display);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--pearl);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .mysteries-header h2 em {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--brass-bright);
+    font-weight: 400;
+    display: block;
+    font-size: 0.75em;
+    margin-top: 0.5rem;
+  }
+
+  .mysteries-header p {
+    color: var(--silver);
+    font-size: 1.15rem;
+    line-height: 1.85;
+    font-style: italic;
+  }
+
+  .mystery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .mystery-card {
+    background: linear-gradient(180deg, var(--midnight-mid) 0%, var(--midnight-deep) 100%);
+    border: 1px solid var(--tide);
+    padding: 3rem 2.5rem;
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .mystery-card:nth-child(1) { transform: translateY(20px); }
+  .mystery-card:nth-child(2) { transform: translateY(-20px); }
+  .mystery-card:nth-child(3) { transform: translateY(40px); }
+
+  .mystery-card:hover {
+    border-color: var(--brass-bright);
+    transform: translateY(-10px) !important;
+    box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.9);
+  }
+
+  .mystery-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 1px;
+    background: linear-gradient(to right, transparent, var(--brass-bright), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .mystery-card:hover::before { opacity: 1; }
+
+  /* Moon phase icon on each card */
+  .mystery-moon {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--midnight-deep);
+    border: 1px solid var(--silver-dim);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mystery-moon::before {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: var(--moonlight);
+  }
+
+  /* Waxing crescent */
+  .mystery-card:nth-child(1) .mystery-moon::before {
+    inset: 0;
+    clip-path: ellipse(40% 50% at 65% 50%);
+  }
+  /* Full moon */
+  .mystery-card:nth-child(2) .mystery-moon::before {
+    inset: 3px;
+  }
+  /* Waning crescent */
+  .mystery-card:nth-child(3) .mystery-moon::before {
+    inset: 0;
+    clip-path: ellipse(40% 50% at 35% 50%);
+  }
+
+  .mystery-number {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 5.5rem;
+    line-height: 1;
+    color: var(--brass-bright);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.05em;
+  }
+
+  .mystery-card h3 {
+    font-family: var(--ko-display);
+    font-weight: 800;
+    font-size: 1.55rem;
+    color: var(--pearl);
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+  }
+
+  .mystery-card .subtitle {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--silver-dim);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+  }
+
+  .mystery-card .desc {
+    color: var(--silver);
+    line-height: 1.9;
+    font-size: 0.97rem;
+  }
+
+  .mystery-card .clues {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--tide);
+    font-family: var(--type);
+    font-size: 0.72rem;
+    color: var(--silver-dim);
+    letter-spacing: 0.18em;
+    line-height: 1.9;
+  }
+
+  .mystery-card .clues strong {
+    color: var(--brass-bright);
+    display: block;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.22em;
+  }
+
+  /* ============================================================
+     CHARACTERS
+     ============================================================ */
+  .characters {
+    padding: 10rem 4vw 8rem;
+    background:
+      radial-gradient(ellipse at bottom, var(--midnight-mid) 0%, transparent 70%),
+      var(--midnight-deep);
+    position: relative;
+  }
+
+  .characters-header {
+    max-width: 900px;
+    margin: 0 auto 5rem;
+    text-align: center;
+  }
+
+  .characters-header h2 {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    color: var(--pearl);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .characters-header .ko {
+    font-family: var(--ko-display);
+    font-weight: 800;
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    color: var(--brass-bright);
+    letter-spacing: 0.4em;
+    margin-bottom: 2rem;
+  }
+
+  .characters-header p {
+    color: var(--silver);
+    font-size: 1.05rem;
+    line-height: 1.85;
+    font-style: italic;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  .character-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .character-card {
+    background: linear-gradient(170deg, var(--midnight-mid), var(--midnight-deep));
+    border: 1px solid var(--tide);
+    padding: 2.5rem 2rem;
+    position: relative;
+    transition: all 0.5s ease;
+    overflow: hidden;
+  }
+
+  .character-card::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid transparent;
+    pointer-events: none;
+    transition: border-color 0.4s;
+  }
+
+  .character-card:hover::before { border-color: var(--brass-dim); }
+
+  .character-card:hover {
+    border-color: var(--brass-bright);
+    transform: translateY(-8px);
+  }
+
+  .character-portrait {
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .character-portrait .frame {
+    position: absolute;
+    inset: 0;
+    color: var(--brass-bright);
+  }
+
+  .character-portrait .letter {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 4rem;
+    color: var(--pearl);
+    line-height: 1;
+    z-index: 2;
+    text-shadow: 0 0 20px rgba(216, 221, 232, 0.3);
+  }
+
+  .character-card .name {
+    font-family: var(--ko-display);
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--pearl);
+    text-align: center;
+    margin-bottom: 0.3rem;
+  }
+
+  .character-card .name-en {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--silver-dim);
+    text-align: center;
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .character-card .role {
+    font-family: var(--type);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: var(--brass-bright);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0.6rem;
+    border-top: 1px solid var(--brass-dim);
+    border-bottom: 1px solid var(--brass-dim);
+    display: block;
+  }
+
+  .character-card .desc {
+    color: var(--silver);
+    font-size: 0.9rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+
+  .character-card .stats {
+    list-style: none;
+    padding: 0;
+    margin-top: auto;
+    font-size: 0.85rem;
+  }
+
+  .character-card .stats li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.45rem 0;
+    border-bottom: 1px dotted var(--tide);
+    color: var(--silver);
+  }
+
+  .character-card .stats li:last-child { border-bottom: none; }
+
+  .character-card .stats li span:first-child {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--silver-dim);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+  }
+
+  .character-card .stats li span:last-child {
+    color: var(--brass-bright);
+    font-family: var(--ko-body);
+  }
+
+  .character-tag {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    font-family: var(--type);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    padding: 0.3rem 0.65rem;
+    background: var(--tide);
+    color: var(--pearl);
+    z-index: 3;
+  }
+
+  .character-tag.danger { background: var(--crimson-deep); }
+  .character-tag.royal { background: var(--brass-dim); color: var(--midnight-deep); }
+
+  /* ============================================================
+     GOSSIP CLIPPINGS
+     ============================================================ */
+  .gossip {
+    padding: 10rem 4vw;
+    background: var(--midnight);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gossip-header {
+    text-align: center;
+    margin-bottom: 6rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .gossip-header h2 {
+    font-family: var(--ko-display);
+    font-weight: 800;
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    color: var(--pearl);
+    margin-bottom: 1rem;
+  }
+
+  .gossip-header .subtitle {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--brass-bright);
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+  }
+
+  .clippings {
+    position: relative;
+    max-width: 1300px;
+    margin: 0 auto;
+    height: 700px;
+  }
+
+  .clipping {
+    position: absolute;
+    background: var(--pearl);
+    color: var(--ink);
+    padding: 2rem 2rem 1.5rem;
+    box-shadow:
+      0 25px 50px -15px rgba(0, 0, 0, 0.8),
+      0 0 0 1px rgba(0, 0, 0, 0.1);
+    font-family: "Noto Serif KR", "EB Garamond", serif;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s 0.5s;
+  }
+
+  .clipping:hover {
+    transform: scale(1.05) rotate(0deg) !important;
+    z-index: 50 !important;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s;
+  }
+
+  .clipping .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .clipping .masthead .name {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+
+  .clipping .masthead .meta {
+    font-family: var(--type);
+    font-size: 0.62rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.12em;
+  }
+
+  .clipping h4 {
+    font-family: var(--ko-display);
+    font-weight: 800;
+    font-size: 1.25rem;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 0.8rem;
+  }
+
+  .clipping p {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+
+  .clipping.c1 {
+    top: 0; left: 4%;
+    width: 320px;
+    transform: rotate(-4deg);
+    z-index: 3;
+  }
+  .clipping.c2 {
+    top: 50px; left: 30%;
+    width: 360px;
+    transform: rotate(3deg);
+    z-index: 4;
+  }
+  .clipping.c3 {
+    top: 80px; right: 6%;
+    width: 290px;
+    transform: rotate(5deg);
+    z-index: 2;
+  }
+  .clipping.c4 {
+    top: 380px; left: 14%;
+    width: 340px;
+    transform: rotate(2deg);
+    z-index: 5;
+  }
+  .clipping.c5 {
+    top: 350px; right: 18%;
+    width: 320px;
+    transform: rotate(-5deg);
+    z-index: 6;
+  }
+
+  .clipping .byline {
+    font-family: var(--body-en);
+    font-style: italic;
+    font-size: 0.74rem;
+    color: var(--ink-soft);
+    margin-top: 1rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(10, 15, 26, 0.2);
+  }
+
+  .clipping .tag-in {
+    display: inline-block;
+    color: var(--pearl);
+    padding: 0.15rem 0.5rem;
+    font-family: var(--type);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.6rem;
+  }
+
+  .clipping .tag-in.crime { background: var(--crimson-deep); }
+  .clipping .tag-in.scandal { background: var(--midnight-light); }
+  .clipping .tag-in.royal { background: var(--brass-dim); color: var(--midnight-deep); }
+
+  /* ============================================================
+     GAME FEATURES
+     ============================================================ */
+  .features {
+    padding: 10rem 4vw;
+    background: linear-gradient(180deg, var(--midnight) 0%, var(--midnight-deep) 50%, var(--midnight) 100%);
+    position: relative;
+  }
+
+  .features-header {
+    max-width: 900px;
+    margin: 0 auto 6rem;
+    text-align: center;
+  }
+
+  .features-header h2 {
+    font-family: var(--ko-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    color: var(--pearl);
+    line-height: 1.25;
+    margin-bottom: 1rem;
+  }
+
+  .features-header h2 .accent {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--brass-bright);
+    font-weight: 400;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .feature {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    position: relative;
+    background: rgba(14, 26, 48, 0.4);
+    border: 1px solid var(--tide);
+    transition: all 0.4s;
+  }
+
+  .feature:hover {
+    border-color: var(--brass-bright);
+    background: rgba(29, 53, 80, 0.4);
+    transform: translateY(-5px);
+  }
+
+  .feature .icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1.5rem;
+    color: var(--brass-bright);
+    transition: transform 0.5s ease;
+  }
+
+  .feature:hover .icon { transform: scale(1.15) rotate(-5deg); }
+
+  .feature .count {
+    font-family: var(--display);
+    font-weight: 800;
+    font-style: italic;
+    color: var(--pearl);
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .feature h3 {
+    font-family: var(--ko-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--pearl);
+    margin-bottom: 0.3rem;
+  }
+
+  .feature .h3-en {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--silver-dim);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .feature p {
+    color: var(--silver);
+    line-height: 1.75;
+    font-size: 0.88rem;
+  }
+
+  /* Endings strip */
+  .endings-strip {
+    margin-top: 7rem;
+    background:
+      linear-gradient(180deg, var(--midnight-mid), var(--midnight-deep));
+    border-top: 1px solid var(--brass-dim);
+    border-bottom: 1px solid var(--brass-dim);
+    padding: 3.5rem 4vw;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .endings-strip-title {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--brass-bright);
+    letter-spacing: 0.3em;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+  }
+
+  .endings-flow {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .ending-badge {
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+    padding: 1.5rem 0.6rem;
+    border: 1px solid var(--tide);
+    transition: all 0.4s;
+    background: var(--midnight);
+    position: relative;
+  }
+
+  .ending-badge:hover {
+    border-color: var(--brass-bright);
+    transform: translateY(-4px);
+  }
+
+  .ending-badge .moon-phase {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--moonlight);
+    margin: 0 auto 0.8rem;
+    box-shadow: 0 0 12px rgba(216, 221, 232, 0.4);
+  }
+  .ending-badge:nth-child(2) .moon-phase {
+    background: linear-gradient(90deg, var(--moonlight) 50%, transparent 50%);
+  }
+  .ending-badge:nth-child(3) .moon-phase {
+    background: linear-gradient(90deg, var(--moonlight) 70%, transparent 70%);
+  }
+  .ending-badge:nth-child(4) .moon-phase {
+    background: linear-gradient(90deg, transparent 30%, var(--moonlight) 30%);
+  }
+  .ending-badge:nth-child(5) .moon-phase {
+    background: linear-gradient(90deg, transparent 50%, var(--moonlight) 50%);
+  }
+  .ending-badge:nth-child(6) .moon-phase {
+    background: var(--midnight-deep);
+    border: 1px solid var(--moonlight);
+  }
+
+  .ending-badge .roman {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--brass-bright);
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .ending-badge .label {
+    font-family: var(--ko-display);
+    font-weight: 800;
+    color: var(--pearl);
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .ending-badge .label-en {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--silver-dim);
+    font-size: 0.72rem;
+  }
+
+  /* ============================================================
+     FINAL CTA
+     ============================================================ */
+  .final-cta {
+    padding: 12rem 4vw;
+    background: radial-gradient(ellipse at center, var(--midnight-light) 0%, var(--midnight-deep) 70%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta::before,
+  .final-cta::after {
+    content: "";
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    border: 1px solid var(--silver-dim);
+    opacity: 0.15;
+    animation: rotate 80s linear infinite;
+  }
+
+  .final-cta::before {
+    top: -350px; left: -250px;
+    border-color: var(--brass);
+  }
+
+  .final-cta::after {
+    bottom: -350px; right: -250px;
+    border-color: var(--crimson);
+    animation-direction: reverse;
+  }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .final-cta-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .final-cta h2 {
+    font-family: var(--display);
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(3rem, 7vw, 6rem);
+    color: var(--pearl);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  .final-cta .ko-title {
+    font-family: var(--ko-display);
+    font-weight: 800;
+    font-size: clamp(1.3rem, 2.5vw, 2rem);
+    color: var(--brass-bright);
+    letter-spacing: 0.45em;
+    margin-bottom: 3rem;
+  }
+
+  .final-cta p {
+    color: var(--silver);
+    font-size: 1.15rem;
+    line-height: 2;
+    margin-bottom: 4rem;
+    font-style: italic;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .final-cta-actions {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 4rem;
+  }
+
+  /* Release info */
+  .release-info {
+    display: flex;
+    gap: 4rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-top: 4rem;
+    border-top: 1px solid var(--tide);
+  }
+
+  .release-info-item {
+    text-align: center;
+  }
+
+  .release-info-item .label {
+    font-family: var(--type);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--silver-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .release-info-item .value {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--brass-bright);
+  }
+
+  .release-info-item .value-ko {
+    font-family: var(--ko-display);
+    font-weight: 700;
+    color: var(--pearl);
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    margin-top: 0.3rem;
+  }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer.site-footer {
+    background: var(--midnight-deep);
+    padding: 4rem 4vw 3rem;
+    border-top: 1px solid var(--tide);
+    position: relative;
+    z-index: 2;
+  }
+
+  .footer-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--tide);
+  }
+
+  .footer-brand h3 {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--pearl);
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-brand .ko {
+    font-family: var(--ko-display);
+    color: var(--brass-bright);
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-brand p {
+    color: var(--silver-dim);
+    font-size: 0.9rem;
+    line-height: 1.75;
+    font-style: italic;
+  }
+
+  .footer-col h5 {
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--brass-bright);
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+  }
+
+  .footer-col ul { list-style: none; }
+
+  .footer-col li { margin-bottom: 0.8rem; }
+
+  .footer-col a {
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+  }
+
+  .footer-col a:hover { color: var(--brass-bright); }
+
+  .footer-bottom {
+    max-width: 1400px;
+    margin: 2rem auto 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--type);
+    font-size: 0.7rem;
+    color: var(--silver-dim);
+    letter-spacing: 0.22em;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  /* ============================================================
+     SCROLL REVEAL
+     ============================================================ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Hero entrance animation */
+  .hero-meta,
+  h1.hero-title .line1,
+  h1.hero-title .line2,
+  .hero-korean,
+  .hero-tagline,
+  .hero-cta {
+    animation: heroFade 1.2s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  }
+
+  .hero-meta { animation-delay: 0.1s; }
+  h1.hero-title .line1 { animation-delay: 0.3s; }
+  h1.hero-title .line2 { animation-delay: 0.5s; }
+  .hero-korean { animation-delay: 0.8s; }
+  .hero-tagline { animation-delay: 1s; }
+  .hero-cta { animation-delay: 1.2s; }
+
+  @keyframes heroFade {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 1100px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .character-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 1000px) {
+    .premise-grid { grid-template-columns: 1fr; gap: 4rem; }
+    .mystery-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .mystery-card:nth-child(n) { transform: translateY(0); }
+    .clippings { height: auto; display: flex; flex-direction: column; gap: 2rem; align-items: center; }
+    .clipping {
+      position: relative; top: auto !important; left: auto !important;
+      right: auto !important; width: 90% !important; max-width: 400px;
+    }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
+    nav.site-nav { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .hero-korean { padding-left: 0; }
+    .hero-korean::before,
+    .hero-korean::after { display: none; }
+    .hero-tagline { text-align: left; }
+    .character-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero-moon { width: 50vh; height: 50vh; right: -15vw; }
+  }
+</style>
+</head>
+<body>
+  <!-- ============================================================
+       TIDE / EXTRA BAR
+       ============================================================ -->
+  <div class="tide-bar">
+    <span class="label">TIDEMARK · 호외</span>
+    <div class="marquee-wrap">
+      <div class="marquee">
+        <span><span class="moon">☾</span>해안경비대장, 달다리의 밤 이후 졸도 — 의무대 함구령</span>
+        <span><span class="moon">☾</span>크림슨 코드 살인마, 다섯 번째 시신을 등대 아래 남기다</span>
+        <span><span class="moon">☾</span>황태자, "은빛 신부"를 부르며 베일 무도회장을 가로지르다</span>
+        <span><span class="moon">☾</span>모르네 공작의 의문스러운 붉은 비단 — 사교계 술렁</span>
+        <span><span class="moon">☾</span>왕실, 9년 만의 예언의 아이에 대한 공식 입장 발표 예정</span>
+        <span><span class="moon">☾</span>해안경비대장, 달다리의 밤 이후 졸도 — 의무대 함구령</span>
+        <span><span class="moon">☾</span>크림슨 코드 살인마, 다섯 번째 시신을 등대 아래 남기다</span>
+        <span><span class="moon">☾</span>황태자, "은빛 신부"를 부르며 베일 무도회장을 가로지르다</span>
+        <span><span class="moon">☾</span>모르네 공작의 의문스러운 붉은 비단 — 사교계 술렁</span>
+        <span><span class="moon">☾</span>왕실, 9년 만의 예언의 아이에 대한 공식 입장 발표 예정</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="site-header">
+    <div class="crest">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="42" stroke="currentColor" stroke-width="1.2"/>
+        <circle cx="50" cy="50" r="34" stroke="currentColor" stroke-width="0.6"/>
+        <!-- Stylized lighthouse -->
+        <rect x="44" y="22" width="12" height="46" stroke="currentColor" stroke-width="1.2" fill="none"/>
+        <polygon points="44,22 50,12 56,22" stroke="currentColor" stroke-width="1" fill="currentColor"/>
+        <line x1="44" y1="35" x2="56" y2="35" stroke="currentColor" stroke-width="0.8"/>
+        <line x1="44" y1="50" x2="56" y2="50" stroke="currentColor" stroke-width="0.8"/>
+        <!-- Wave at bottom -->
+        <path d="M28 76 Q 38 70, 50 76 T 72 76" stroke="currentColor" stroke-width="1" fill="none"/>
+        <path d="M30 82 Q 40 78, 50 82 T 70 82" stroke="currentColor" stroke-width="0.7" fill="none" opacity="0.6"/>
+      </svg>
+      <div class="text">
+        Halcyon Press
+        <small>· 할시온 왕실 일간지 ·</small>
+      </div>
+    </div>
+    <nav class="site-nav">
+      <a href="#premise">설정</a>
+      <a href="#mysteries">미스터리</a>
+      <a href="#characters">인물</a>
+      <a href="#gossip">사교란</a>
+      <a href="#features">게임 정보</a>
+      <a href="#play">사전예약</a>
+    </nav>
+  </header>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero">
+    <!-- Background moon -->
+    <div class="hero-moon"></div>
+
+    <!-- Lighthouse silhouette -->
+    <svg class="hero-lighthouse" viewBox="0 0 60 220" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <rect x="22" y="60" width="16" height="120"/>
+      <rect x="18" y="50" width="24" height="14"/>
+      <polygon points="22,50 30,30 38,50"/>
+      <rect x="28" y="20" width="4" height="14"/>
+      <circle cx="30" cy="20" r="3"/>
+      <!-- Cliff base -->
+      <path d="M0 180 L20 175 L35 180 L60 178 L60 220 L0 220 Z"/>
+    </svg>
+
+    <div class="hero-content">
+      <div class="hero-meta">
+        <span>An Interactive Mystery Romance</span>
+        <span class="dot"></span>
+        <span>Vol. I · Of Tides and Veils</span>
+        <span class="dot"></span>
+        <span>15 Chapters · 6 Endings</span>
+        <span class="dot"></span>
+        <span>2026</span>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="line1">An Untold Romance of</span>
+        <span class="line2">The <span class="em">Moonbride</span></span>
+      </h1>
+
+      <div class="hero-korean">달 빛 · 신 부</div>
+
+      <div class="hero-tagline">
+        <strong>3개월 전, 달다리의 밤.</strong><br>
+        그날 밤, 어떤 남자의 품속에서 새벽을 맞이했다.<br>
+        그의 얼굴도, 이름도 기억나지 않는데<br>
+        목덜미에는 은빛 실 자국 하나가 남았다.<br>
+        <span class="signature">─ Who lit the moon for me?</span>
+      </div>
+
+      <div class="hero-cta">
+        <a href="#play" class="btn-primary">
+          <span class="ko">사전 예약하기</span>
+          <span>Pre-register →</span>
+        </a>
+        <a href="#mysteries" class="btn-secondary">사건 파일 열기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PREMISE
+       ============================================================ -->
+  <section class="premise" id="premise">
+    <div class="premise-grid">
+      <div class="premise-text">
+        <div class="eyebrow">The Premise · 잃어버린 밤</div>
+        <h2>
+          9년에 한 번,<br>
+          달이 바다 위에 다리를 놓는 밤<br>
+          <em>— and you woke up alone.</em>
+        </h2>
+        <p>
+          항구도시 <span class="accent">이레모어</span>의 해안경비대장
+          <span class="accent">카엘란 리오르</span>는 훈련 도중 졸도한다.
+          왕실의의 진단은 충격적이었다 — 그는 잉태하고 있었다.
+          그것도 9년 만에 돌아온 일식의 밤, <span class="accent">달다리</span>가 점지한
+          전설 속의 「예언의 아이」를.
+        </p>
+        <p>
+          신화에 따르면 달다리의 밤 베일 무도회에서 맺어진 연인은,
+          성별에 관계없이 단 한 아이를 잉태할 수 있다 — 그러나 그 가능성은
+          <span class="silver-thread">왕족의 햇무리 핏줄</span>과 닿았을 때만 열린다.
+        </p>
+        <p>
+          유일한 단서는 카엘란의 목덜미에 새겨진
+          가느다란 <span class="silver-thread">은빛 실의 표식</span>.
+          달다리의 밤을 함께 보낸 자에게 똑같이 새겨졌을, 절대 지워지지 않는 흔적이다.
+        </p>
+        <p>
+          그가 누구였는지만 알아내면 된다.
+          ─ 단지, 그날 밤의 모든 시간이 카엘란의 기억에서 깨끗이 도려내져 있을 뿐이다.
+        </p>
+      </div>
+
+      <div class="mark-card">
+        <div class="scroll-top">
+          <span class="case-no">CASE NO. 0091 · CONFIDENTIAL</span>
+          <span class="status">● UNRESOLVED</span>
+        </div>
+        <div class="mark-card-body">
+          <h4>The Bondmark</h4>
+          <h3>은 빛 표 식</h3>
+
+          <div class="silver-mark">
+            <div class="pulse"></div>
+            <svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Outer circle -->
+              <circle cx="110" cy="110" r="100" stroke="currentColor" stroke-width="0.6" stroke-dasharray="2 4" opacity="0.5"/>
+              <circle cx="110" cy="110" r="85" stroke="currentColor" stroke-width="0.8" opacity="0.7"/>
+              <!-- Crescent moon -->
+              <path d="M 110 30 A 80 80 0 1 0 110 190 A 60 60 0 1 1 110 30 Z" fill="currentColor" opacity="0.85"/>
+              <!-- Silver thread woven through -->
+              <path d="M 30 110 Q 70 80, 110 110 T 190 110" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <path d="M 30 130 Q 70 100, 110 130 T 190 130" stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.5" stroke-linecap="round"/>
+              <!-- Stars -->
+              <circle cx="50" cy="50" r="1.5" fill="currentColor"/>
+              <circle cx="180" cy="60" r="1" fill="currentColor"/>
+              <circle cx="170" cy="170" r="1.2" fill="currentColor"/>
+              <circle cx="40" cy="180" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+
+          <p>
+            "달다리에서 맺어진 연인의 살갗에는<br>
+            절대 지워지지 않는 은실의 흔적이 남는다.<br>
+            그것이 짝의 살갗과 닿으면, 별처럼 빛난다."
+          </p>
+          <div class="footnote">─ Codex Lunaris, vii.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TROPE TAGS
+       ============================================================ -->
+  <section class="tropes">
+    <div class="tropes-header">
+      <div class="eyebrow">Tag List · 어떤 이야기인가</div>
+      <h2>
+        이런 분들을 위한 이야기<br>
+        <em>For Those Who Adore…</em>
+      </h2>
+      <p>당신이 찾던 모든 트로프가 한 작품에 모였습니다.</p>
+    </div>
+    <div class="tag-grid">
+      <span class="tag hot">#둔감수×집착광공</span>
+      <span class="tag hot">#10년_짝사랑</span>
+      <span class="tag">#소울메이트_표식</span>
+      <span class="tag hot">#기억상실의_그_밤</span>
+      <span class="tag">#왕족×기사</span>
+      <span class="tag danger">#범인은_가까이에</span>
+      <span class="tag">#가짜_적대</span>
+      <span class="tag">#오해의_연속</span>
+      <span class="tag hot">#출생의_비밀</span>
+      <span class="tag">#예언의_아이</span>
+      <span class="tag">#사교계_가십</span>
+      <span class="tag">#가면무도회</span>
+      <span class="tag">#아카데미_플래시백</span>
+      <span class="tag danger">#피해자가_나를_닮았다</span>
+      <span class="tag">#해양_판타지</span>
+      <span class="tag">#등대_로맨스</span>
+      <span class="tag">#달의_가호</span>
+      <span class="tag hot">#강제결혼_위기</span>
+      <span class="tag">#정략혼인</span>
+      <span class="tag">#두_명의_구혼자</span>
+      <span class="tag">#임신은_했는데_누구의_애</span>
+      <span class="tag danger">#한쪽_손목엔_피</span>
+      <span class="tag">#왕실_정치</span>
+      <span class="tag">#예지몽</span>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       THREE MYSTERIES
+       ============================================================ -->
+  <section class="mysteries" id="mysteries">
+    <div class="mysteries-header">
+      <div class="eyebrow">Three Threads · 세 갈래의 진실</div>
+      <h2>
+        풀어야 할 세 개의 매듭
+        <em>Three Knots to Untie</em>
+      </h2>
+      <p>
+        달이 바다 위에 다리를 놓던 밤, 세 가지 비밀이 한 사람의 운명에 엮여 들었다.<br>
+        모든 단서는 결국 한 사람의 목덜미로 돌아온다.
+      </p>
+    </div>
+
+    <div class="mystery-grid">
+      <article class="mystery-card">
+        <div class="mystery-moon"></div>
+        <div class="mystery-number">I.</div>
+        <h3>그 아이의 진짜 아버지는 누구인가</h3>
+        <p class="subtitle">Whose Tidechild Stirs Beneath?</p>
+        <p class="desc">
+          햇무리 핏줄을 가진 자만이 예언의 아이를 잉태시킬 수 있다.
+          후보는 셋 — 차가운 황태자 아우렐, 다정한 베스퍼 공작, 그리고 빨간 머리의 후작.
+          잃어버린 그 밤, 카엘란의 침대를 함께 쓴 것은 누구였을까.
+        </p>
+        <div class="clues">
+          <strong>SUSPECTS</strong>
+          황태자 아우렐 데마로<br>
+          공작 베스퍼 모르네<br>
+          후작 엘리암 밴스
+        </div>
+      </article>
+
+      <article class="mystery-card">
+        <div class="mystery-moon"></div>
+        <div class="mystery-number">II.</div>
+        <h3>크림슨 코드의 손은 누구의 것인가</h3>
+        <p class="subtitle">Identity of the Crimson Cord</p>
+        <p class="desc">
+          넉 달간 다섯 구의 시신. 모두 붉은 비단 끈으로 묶여 절벽 아래에서 발견되었다.
+          희생자들은 모두 검은 머리에 흰 피부, 어느 한 사람을 너무도 닮은 청년들이었다.
+          ─ 그들이 닮은 그 한 사람은, 지금 거울 앞에 서 있다.
+        </p>
+        <div class="clues">
+          <strong>CLUES</strong>
+          붉은 비단 · 등대 아래<br>
+          마차의 검은 휘장<br>
+          닮은 얼굴들
+        </div>
+      </article>
+
+      <article class="mystery-card">
+        <div class="mystery-moon"></div>
+        <div class="mystery-number">III.</div>
+        <h3>"은빛 신부"는 누구의 별칭인가</h3>
+        <p class="subtitle">Who Bears the Name "Moonbride"?</p>
+        <p class="desc">
+          황태자 아우렐이 아카데미 시절부터 짝사랑해왔다는 이름 없는 사내.
+          그는 사교계 한가운데서 한 사람을 부른다, "나의 은빛 신부"라고.
+          ─ 정작 그렇게 불리는 본인만이, 그게 자신이라는 것을 모른다.
+        </p>
+        <div class="clues">
+          <strong>HINT</strong>
+          아카데미 졸업식 밤<br>
+          익사 사고와 한 벌의 외투<br>
+          가장 둔감한 자
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CHARACTERS
+       ============================================================ -->
+  <section class="characters" id="characters">
+    <div class="characters-header">
+      <div class="eyebrow">Dramatis Personae · 등장인물</div>
+      <h2>Cast of <em>the Veiled Ball</em></h2>
+      <div class="ko">베 일 · 무 도 회 의 · 얼 굴 들</div>
+      <p>
+        은 베일 아래 얼굴을 감춘 모두가 거짓을 말하고 있다.
+        누구의 베일을 가장 먼저 벗길 것인가 — 그리고 누구의 것을
+        영원히 덮어둘 것인가.
+      </p>
+    </div>
+
+    <div class="character-grid">
+      <!-- Caelan -->
+      <article class="character-card">
+        <div class="character-portrait">
+          <svg class="frame" viewBox="0 0 130 130" fill="none" stroke="currentColor" stroke-width="1" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="65" cy="65" r="60"/>
+            <circle cx="65" cy="65" r="54" stroke-dasharray="2 4"/>
+            <path d="M65 10 L70 20 L65 16 L60 20 Z" fill="currentColor"/>
+            <path d="M65 120 L70 110 L65 114 L60 110 Z" fill="currentColor"/>
+            <line x1="15" y1="65" x2="22" y2="65" stroke="currentColor"/>
+            <line x1="108" y1="65" x2="115" y2="65" stroke="currentColor"/>
+          </svg>
+          <span class="letter">C</span>
+        </div>
+        <div class="name">카엘란 리오르</div>
+        <div class="name-en">Caelan Lior</div>
+        <div class="role">Protagonist · 해안경비대장</div>
+        <p class="desc">
+          항구도시 이레모어의 해안경비대장. 26세.
+          올곧은 자작가의 장남이자 유능한 기사이지만,
+          자신을 향한 시선만은 가장 늦게 알아챈다.
+        </p>
+        <ul class="stats">
+          <li><span>연령</span><span>26세</span></li>
+          <li><span>특징</span><span>은빛 눈동자</span></li>
+          <li><span>성격</span><span>강직 · 둔감</span></li>
+        </ul>
+      </article>
+
+      <!-- Aurel -->
+      <article class="character-card">
+        <span class="character-tag royal">CROWN</span>
+        <div class="character-portrait">
+          <svg class="frame" viewBox="0 0 130 130" fill="none" stroke="currentColor" stroke-width="1" xmlns="http://www.w3.org/2000/svg">
+            <!-- Sun rays around portrait -->
+            <circle cx="65" cy="65" r="55"/>
+            <circle cx="65" cy="65" r="50" stroke-dasharray="1 3"/>
+            <g stroke="currentColor">
+              <line x1="65" y1="5" x2="65" y2="12"/>
+              <line x1="65" y1="118" x2="65" y2="125"/>
+              <line x1="5" y1="65" x2="12" y2="65"/>
+              <line x1="118" y1="65" x2="125" y2="65"/>
+              <line x1="23" y1="23" x2="28" y2="28"/>
+              <line x1="102" y1="23" x2="107" y2="28"/>
+              <line x1="23" y1="107" x2="28" y2="102"/>
+              <line x1="102" y1="107" x2="107" y2="102"/>
+            </g>
+          </svg>
+          <span class="letter">A</span>
+        </div>
+        <div class="name">아우렐 데마로</div>
+        <div class="name-en">Crown Prince Aurel</div>
+        <div class="role">Love Interest · 황태자</div>
+        <p class="desc">
+          할시온 왕국의 황태자이자 햇무리 핏줄의 마지막 적통.
+          일식의 밤에 태어나 예지의 가호를 받은 자.
+          나른한 미소 뒤에는 십 년의 묵은 마음이 있다.
+        </p>
+        <ul class="stats">
+          <li><span>연령</span><span>27세</span></li>
+          <li><span>특징</span><span>금발·자색 눈</span></li>
+          <li><span>성격</span><span>변덕 · 집착</span></li>
+        </ul>
+      </article>
+
+      <!-- Vesper -->
+      <article class="character-card">
+        <span class="character-tag danger">SUSPECT</span>
+        <div class="character-portrait">
+          <svg class="frame" viewBox="0 0 130 130" fill="none" stroke="currentColor" stroke-width="1" xmlns="http://www.w3.org/2000/svg">
+            <rect x="15" y="15" width="100" height="100"/>
+            <rect x="22" y="22" width="86" height="86" stroke-dasharray="2 3"/>
+            <!-- Diamond inside -->
+            <polygon points="65,30 100,65 65,100 30,65" stroke="currentColor"/>
+          </svg>
+          <span class="letter">V</span>
+        </div>
+        <div class="name">베스퍼 모르네</div>
+        <div class="name-en">Duke Vesper Mornay</div>
+        <div class="role">Suitor · 모르네 공작</div>
+        <p class="desc">
+          왕의 조카이자 햇무리 핏줄의 또 다른 계승자.
+          정중하고 다정한 미남으로 사교계의 호평이 자자한 신사.
+          그러나 그의 셔츠 소맷부리에는 종종 의문스러운 자국이 남아 있다.
+        </p>
+        <ul class="stats">
+          <li><span>연령</span><span>28세</span></li>
+          <li><span>특징</span><span>거구·갈색 눈</span></li>
+          <li><span>성격</span><span>다정 · ???</span></li>
+        </ul>
+      </article>
+
+      <!-- Mira -->
+      <article class="character-card">
+        <div class="character-portrait">
+          <svg class="frame" viewBox="0 0 130 130" fill="none" stroke="currentColor" stroke-width="1" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="65,8 117,38 117,92 65,122 13,92 13,38"/>
+            <polygon points="65,20 105,42 105,88 65,110 25,88 25,42" stroke-dasharray="2 2"/>
+          </svg>
+          <span class="letter">M</span>
+        </div>
+        <div class="name">미라 알드윈</div>
+        <div class="name-en">Mira Aldwyn</div>
+        <div class="role">Ally · 부대장</div>
+        <p class="desc">
+          해안경비대의 부대장. 카엘란의 가장 든든한 동료이자
+          그의 어리석은 짝사랑에 매일 한숨짓는 보호자.
+          누구보다 빠르게 진실에 가까워지는 두뇌의 소유자.
+        </p>
+        <ul class="stats">
+          <li><span>연령</span><span>28세</span></li>
+          <li><span>특징</span><span>예리한 눈매</span></li>
+          <li><span>성격</span><span>냉정 · 의리</span></li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       GOSSIP CLIPPINGS
+       ============================================================ -->
+  <section class="gossip" id="gossip">
+    <div class="gossip-header">
+      <div class="eyebrow">Society Pages · 사교란</div>
+      <h2>온 항구가 그 둘을 이야기한다</h2>
+      <div class="subtitle">The Whole Harbour Cannot Stop Whispering</div>
+    </div>
+
+    <div class="clippings">
+      <article class="clipping c1">
+        <div class="masthead">
+          <span class="name">Halcyon Tide</span>
+          <span class="meta">No. 1284</span>
+        </div>
+        <span class="tag-in scandal">SCANDAL</span>
+        <h4>등대 발코니의 그 밤, 무슨 일이?</h4>
+        <p>
+          어젯밤 베일 무도회의 등대 발코니에서 격렬한 소리와 함께 뛰쳐나온 자가 있었다.
+          헝클어진 옷매무새, 채 잠그지 못한 단추, 그리고 목덜미에 선명한 잇자국.
+          그분과 그자가 거기서 함께였다는 사실만으로도…
+        </p>
+        <p class="byline">─ 사교란 객원기자</p>
+      </article>
+
+      <article class="clipping c2">
+        <div class="masthead">
+          <span class="name">The Iremore Mirror</span>
+          <span class="meta">Vol. CXCII</span>
+        </div>
+        <span class="tag-in royal">ROYAL · 왕실</span>
+        <h4>"내 은빛 신부야"</h4>
+        <p>
+          황태자 전하께서 어제 베일 무도회 한가운데서 한 사내를 그렇게 부르셨다 한다.
+          사교계의 모든 부채가 동시에 펼쳐졌고 모든 시선이 한 사람에게 쏠렸다.
+          본지 기자는 그 사람이 누구인지 분명히 들었으나…
+        </p>
+        <p class="byline">─ 객원 J.B.</p>
+      </article>
+
+      <article class="clipping c3">
+        <div class="masthead">
+          <span class="name">Halcyon Daily</span>
+          <span class="meta">Morning Ed.</span>
+        </div>
+        <span class="tag-in crime">CRIME</span>
+        <h4>크림슨 코드, 다섯 번째</h4>
+        <p>
+          어제 새벽 절벽 아래 모래사장에서 또 한 구의 시신이 발견되었다.
+          희생자는 25세 가량의 청년. 손발은 익숙한 그 매듭 — 붉은 비단 끈으로 묶여 있었다.
+          해안경비대장 리오르 경의 침묵은 길어지고 있다.
+        </p>
+        <p class="byline">─ 사회부</p>
+      </article>
+
+      <article class="clipping c4">
+        <div class="masthead">
+          <span class="name">Halcyon Tide</span>
+          <span class="meta">Evening Ed.</span>
+        </div>
+        <span class="tag-in royal">PALACE · 왕궁</span>
+        <h4>황태자의 침실, 매일 밤 찾아드는 발걸음</h4>
+        <p>
+          평소엔 그림자조차 비치지 않던 그분께서 최근 황태자궁에 매일 머무르신다.
+          출입 기록을 입수한 본지에 따르면 자정을 한참 넘긴 시각의 출입이 잦으며,
+          새벽이 되어서야 흐트러진 모습으로 나오신다는 시종의 증언이…
+        </p>
+        <p class="byline">─ R. 홀로웨이</p>
+      </article>
+
+      <article class="clipping c5">
+        <div class="masthead">
+          <span class="name">The Iremore Mirror</span>
+          <span class="meta">Exclusive</span>
+        </div>
+        <span class="tag-in scandal">RUMOUR</span>
+        <h4>리오르 경의 잉태설 — 9년의 약속인가</h4>
+        <p>
+          한낱 추측이라 일축하기엔 너무 많은 정황이 있다. 최근 그가 생선 비린내에
+          구역질을 한다는 부두 인부의 증언, 베일 무도회장에서 무심코 손을 배에 얹는 모습이
+          포착되었다는 시종들의 수군거림…
+        </p>
+        <p class="byline">─ 객원 J.B.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       GAME FEATURES
+       ============================================================ -->
+  <section class="features" id="features">
+    <div class="features-header">
+      <div class="eyebrow">Game Features · 게임 정보</div>
+      <h2>
+        당신의 선택이<br>
+        <span class="accent">밤의 모양을 바꾼다</span>
+      </h2>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature">
+        <svg class="icon" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 50 L22 30 L36 38 L52 12"/>
+          <circle cx="8" cy="50" r="2.5" fill="currentColor"/>
+          <circle cx="22" cy="30" r="2.5" fill="currentColor"/>
+          <circle cx="36" cy="38" r="2.5" fill="currentColor"/>
+          <circle cx="52" cy="12" r="2.5" fill="currentColor"/>
+          <path d="M22 30 L18 48 M22 30 L30 50 M36 38 L34 52"/>
+        </svg>
+        <div class="count">15</div>
+        <h3>분기형 스토리</h3>
+        <div class="h3-en">Branching Chapters</div>
+        <p>매 챕터의 결정적 선택지가 이야기를 완전히 바꾼다.</p>
+      </div>
+
+      <div class="feature">
+        <svg class="icon" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="22"/>
+          <circle cx="30" cy="30" r="16" stroke-dasharray="2 3"/>
+          <path d="M30 30 L40 20" stroke-width="2"/>
+          <circle cx="30" cy="30" r="2" fill="currentColor"/>
+          <line x1="30" y1="6" x2="30" y2="12"/>
+          <line x1="30" y1="48" x2="30" y2="54"/>
+        </svg>
+        <div class="count">6</div>
+        <h3>가능한 결말</h3>
+        <div class="h3-en">Possible Endings</div>
+        <p>달의 여섯 위상처럼, 운명도 여섯 갈래로 갈린다.</p>
+      </div>
+
+      <div class="feature">
+        <svg class="icon" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="40" height="32" rx="2"/>
+          <line x1="10" y1="22" x2="50" y2="22"/>
+          <circle cx="14" cy="18" r="0.8" fill="currentColor"/>
+          <circle cx="17" cy="18" r="0.8" fill="currentColor"/>
+          <line x1="14" y1="30" x2="36" y2="30"/>
+          <line x1="14" y1="34" x2="32" y2="34"/>
+          <line x1="14" y1="38" x2="36" y2="38"/>
+          <line x1="14" y1="42" x2="28" y2="42"/>
+        </svg>
+        <div class="count">40+</div>
+        <h3>탐문 자료</h3>
+        <div class="h3-en">Case Documents</div>
+        <p>신문 가십·증언·물증 — 단서를 모아 진실에 다가가라.</p>
+      </div>
+
+      <div class="feature">
+        <svg class="icon" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+          <path d="M30 8 L36 22 L52 24 L40 35 L43 50 L30 42 L17 50 L20 35 L8 24 L24 22 Z"/>
+          <circle cx="30" cy="30" r="5" fill="currentColor"/>
+        </svg>
+        <div class="count">12</div>
+        <h3>일러스트 CG</h3>
+        <div class="h3-en">CG Events</div>
+        <p>주요 장면마다 풀화면 일러스트로 펼쳐지는 결정적 순간들.</p>
+      </div>
+    </div>
+
+    <!-- Endings strip -->
+    <div class="endings-strip">
+      <div class="endings-strip-title">─ Six Moons · 여섯 갈래의 운명 ─</div>
+      <div class="endings-flow">
+        <div class="ending-badge">
+          <div class="moon-phase"></div>
+          <div class="roman">I</div>
+          <div class="label">진실의 보름</div>
+          <div class="label-en">The Full Moon</div>
+        </div>
+        <div class="ending-badge">
+          <div class="moon-phase"></div>
+          <div class="roman">II</div>
+          <div class="label">기울어가는 약속</div>
+          <div class="label-en">The Waning Vow</div>
+        </div>
+        <div class="ending-badge">
+          <div class="moon-phase"></div>
+          <div class="roman">III</div>
+          <div class="label">붉은 비단의 결말</div>
+          <div class="label-en">The Crimson Cord</div>
+        </div>
+        <div class="ending-badge">
+          <div class="moon-phase"></div>
+          <div class="roman">IV</div>
+          <div class="label">차오르는 도망</div>
+          <div class="label-en">The Waxing Flight</div>
+        </div>
+        <div class="ending-badge">
+          <div class="moon-phase"></div>
+          <div class="roman">V</div>
+          <div class="label">잘못된 새벽</div>
+          <div class="label-en">The Wrong Dawn</div>
+        </div>
+        <div class="ending-badge">
+          <div class="moon-phase"></div>
+          <div class="roman">VI</div>
+          <div class="label">달 없는 밤</div>
+          <div class="label-en">The Moonless Night</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FINAL CTA
+       ============================================================ -->
+  <section class="final-cta" id="play">
+    <div class="final-cta-content">
+      <div class="eyebrow">Step Into the Veiled Ball · 베일 무도회로</div>
+      <h2><em>The moon</em> will rise<br>for <em>you</em> alone.</h2>
+      <div class="ko-title">달 이 · 당 신 을 · 부 른 다</div>
+      <p>
+        은 베일을 쓰고, 시린 샴페인을 받아들고, 등대 발코니로 향하라.
+        다음에 눈을 떴을 때 당신의 목덜미에 어떤 흔적이 남을지,
+        그 짝이 누구의 살갗 위에 새겨져 있을지는 — 오직 당신의 선택에 달려 있다.
+      </p>
+      <div class="final-cta-actions">
+        <a href="#" class="btn-primary">
+          <span class="ko">사전 예약하기</span>
+          <span>Pre-register →</span>
+        </a>
+        <a href="#" class="btn-secondary">데모 플레이</a>
+      </div>
+
+      <div class="release-info">
+        <div class="release-info-item">
+          <div class="label">RELEASE · 출시 예정</div>
+          <div class="value">2026 / Q4</div>
+          <div class="value-ko">2 0 2 6 년 4 분 기</div>
+        </div>
+        <div class="release-info-item">
+          <div class="label">PLATFORMS · 플랫폼</div>
+          <div class="value">PC · iOS · Android</div>
+          <div class="value-ko">Steam · 앱스토어 · 구글플레이</div>
+        </div>
+        <div class="release-info-item">
+          <div class="label">LANGUAGE · 언어</div>
+          <div class="value">한국어 · English · 日本語</div>
+          <div class="value-ko">풀 더빙 지 원</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><em>The Moonbride</em></h3>
+        <div class="ko">달 빛 · 신 부</div>
+        <p>
+          베일을 쓴 모두가 거짓을 말한다.
+          베일을 벗기 전까지는 그 누구도 진짜 얼굴을 보지 못한다.<br><br>
+          ─ Halcyon Press 인터렉티브 스튜디오의 첫 번째 장편 작품.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h5>Game</h5>
+        <ul>
+          <li><a href="#play">사전 예약</a></li>
+          <li><a href="#features">게임 정보</a></li>
+          <li><a href="#">데모 플레이</a></li>
+          <li><a href="#">시스템 사양</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Story</h5>
+        <ul>
+          <li><a href="#mysteries">미스터리</a></li>
+          <li><a href="#characters">등장인물</a></li>
+          <li><a href="#gossip">사교란</a></li>
+          <li><a href="#premise">세계관</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Studio</h5>
+        <ul>
+          <li><a href="#">제작사 소개</a></li>
+          <li><a href="#">크레딧</a></li>
+          <li><a href="#">언론 문의</a></li>
+          <li><a href="#">프레스 키트</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© MMXXVI · HALCYON PRESS INTERACTIVE</span>
+      <span>AN ORIGINAL WORK · 오리지널 IP</span>
+      <span>ALL RIGHTS RESERVED</span>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
+    );
+
+    document.querySelectorAll(
+      '.mystery-card, .character-card, .clipping, .feature, .ending-badge, .premise-text, .mark-card, .characters-header, .mysteries-header, .features-header, .gossip-header, .tropes-header, .tag, .release-info-item'
+    ).forEach((el) => {
+      el.classList.add('reveal');
+      observer.observe(el);
+    });
+
+    // Parallax moon
+    const heroMoon = document.querySelector('.hero-moon');
+    if (heroMoon) {
+      window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        if (scrolled < window.innerHeight) {
+          heroMoon.style.transform = `translateY(${scrolled * 0.3}px) scale(${1 - scrolled * 0.0002})`;
+        }
+      });
+    }
+  </script>
+</body>
+</html>

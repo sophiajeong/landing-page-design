@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>재의 무게 — The Weight of Ash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@200;300;400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0b0a09;
+    --ink-deep: #050403;
+    --bone: #ebe4d4;
+    --bone-soft: #d4cdb8;
+    --ash: #4a4540;
+    --smoke: #2a2724;
+    --wine: #6b1f2d;
+    --wine-bright: #8b2838;
+    --wine-deep: #3d1118;
+    --gold: #8a7654;
+    --gold-soft: #6b5a3f;
+  }
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    background: var(--ink);
+    color: var(--bone);
+    font-family: 'Noto Serif KR', 'Cormorant Garamond', serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: default;
+  }
+  
+  /* Film grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+  
+  /* Subtle vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%);
+  }
+  
+  ::selection {
+    background: var(--wine);
+    color: var(--bone);
+  }
+  
+  /* Falling ash particles */
+  .ash-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  
+  .ash {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--bone);
+    border-radius: 50%;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+    0% {
+      transform: translateY(-100px) translateX(0) rotate(0deg);
+      opacity: 0;
+    }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.3; }
+    100% {
+      transform: translateY(110vh) translateX(40px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+  
+  /* ========= NAVIGATION ========= */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.8rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    background: linear-gradient(to bottom, rgba(11,10,9,0.85), rgba(11,10,9,0));
+  }
+  
+  .nav-mark {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: 0.4em;
+    color: var(--bone);
+  }
+  
+  .nav-mark span {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-top: 0.3rem;
+    font-weight: 400;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  
+  .nav-links a {
+    color: var(--bone-soft);
+    text-decoration: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    position: relative;
+    transition: color 0.4s;
+    padding-bottom: 0.4rem;
+  }
+  
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: var(--wine);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .nav-links a:hover {
+    color: var(--bone);
+  }
+  
+  .nav-links a:hover::after {
+    width: 100%;
+  }
+  
+  /* ========= HERO ========= */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0 6vw;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .hero-left {
+    position: relative;
+    z-index: 3;
+  }
+  
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1.2s 0.3s forwards;
+  }
+  
+  .hero-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 800;
+    font-size: clamp(4rem, 9vw, 9.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--bone);
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  
+  .hero-title .char {
+    display: inline-block;
+    opacity: 0;
+    animation: charReveal 1s forwards;
+  }
+  
+  .hero-title .char:nth-child(1) { animation-delay: 0.4s; }
+  .hero-title .char:nth-child(2) { animation-delay: 0.55s; }
+  .hero-title .char:nth-child(3) { animation-delay: 0.7s; }
+  .hero-title .char:nth-child(4) { animation-delay: 0.85s; }
+  
+  @keyframes charReveal {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+      filter: blur(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+  
+  .hero-title-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.3rem;
+    letter-spacing: 0.15em;
+    color: var(--bone-soft);
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 1.2s 1.4s forwards;
+  }
+  
+  .hero-desc {
+    font-size: 0.95rem;
+    line-height: 2;
+    color: var(--bone-soft);
+    max-width: 480px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 1.2s 1.7s forwards;
+    font-weight: 300;
+  }
+  
+  .hero-cta {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 1.2s 2s forwards;
+  }
+  
+  .btn-primary {
+    display: inline-block;
+    padding: 1.2rem 2.8rem;
+    background: transparent;
+    border: 1px solid var(--bone);
+    color: var(--bone);
+    text-decoration: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.5s;
+    cursor: pointer;
+  }
+  
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--wine);
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+    z-index: -1;
+  }
+  
+  .btn-primary:hover::before {
+    transform: translateY(0);
+  }
+  
+  .btn-primary:hover {
+    border-color: var(--wine);
+  }
+  
+  .btn-secondary {
+    color: var(--bone-soft);
+    text-decoration: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: color 0.4s;
+  }
+  
+  .btn-secondary::before {
+    content: '';
+    width: 2.5rem;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.4s;
+  }
+  
+  .btn-secondary:hover {
+    color: var(--bone);
+  }
+  
+  .btn-secondary:hover::before {
+    width: 3.5rem;
+  }
+  
+  /* Hero right - camellia SVG */
+  .hero-right {
+    position: relative;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 2s 0.5s forwards;
+  }
+  
+  .camellia-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .camellia {
+    width: 80%;
+    max-width: 500px;
+    animation: float 8s ease-in-out infinite;
+    filter: drop-shadow(0 20px 60px rgba(107, 31, 45, 0.3));
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(2deg); }
+  }
+  
+  .quote-overlay {
+    position: absolute;
+    bottom: 8%;
+    right: -2%;
+    max-width: 280px;
+    text-align: right;
+  }
+  
+  .quote-overlay p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--bone-soft);
+    line-height: 1.6;
+  }
+  
+  .quote-overlay span {
+    display: block;
+    margin-top: 0.8rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-style: normal;
+  }
+  
+  /* Vertical text */
+  .vertical-text {
+    position: absolute;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%) rotate(180deg);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: var(--ash);
+    text-transform: uppercase;
+  }
+  
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--bone-soft);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 2s 3s forwards;
+  }
+  
+  .scroll-indicator::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    margin: 1rem auto 0;
+    animation: scrollLine 2s infinite;
+  }
+  
+  @keyframes scrollLine {
+    0%, 100% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+  }
+  
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* ========= STORY SECTION ========= */
+  .story {
+    padding: 12rem 6vw 10rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.75rem;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .section-label::before {
+    content: '';
+    width: 3rem;
+    height: 1px;
+    background: var(--gold);
+  }
+  
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 6rem;
+    align-items: start;
+  }
+  
+  .story-header h2 {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    color: var(--bone);
+    margin-bottom: 2rem;
+  }
+  
+  .story-header h2 em {
+    font-style: italic;
+    color: var(--wine-bright);
+  }
+  
+  .story-meta {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    color: var(--ash);
+    text-transform: uppercase;
+    line-height: 2.2;
+  }
+  
+  .story-meta span {
+    display: block;
+  }
+  
+  .story-meta strong {
+    color: var(--bone-soft);
+    font-weight: 400;
+  }
+  
+  .story-body {
+    font-size: 1.05rem;
+    line-height: 2.1;
+    color: var(--bone-soft);
+    font-weight: 300;
+  }
+  
+  .story-body p {
+    margin-bottom: 2rem;
+  }
+  
+  .story-body p:first-child::first-letter {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 4.5rem;
+    font-weight: 800;
+    color: var(--wine);
+    float: left;
+    line-height: 0.9;
+    padding: 0.3rem 0.8rem 0 0;
+  }
+  
+  .story-body blockquote {
+    border-left: 1px solid var(--wine);
+    padding: 1rem 0 1rem 2rem;
+    margin: 3rem 0;
+    font-family: 'Nanum Myeongjo', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--bone);
+    line-height: 1.7;
+  }
+  
+  .story-body blockquote cite {
+    display: block;
+    margin-top: 1rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-style: normal;
+  }
+  
+  /* ========= CHARACTERS ========= */
+  .characters {
+    padding: 10rem 6vw;
+    background: var(--ink-deep);
+    position: relative;
+    z-index: 2;
+  }
+  
+  .characters-header {
+    text-align: center;
+    margin-bottom: 8rem;
+  }
+  
+  .characters-header h2 {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--bone);
+    margin-top: 1rem;
+  }
+  
+  .characters-header h2 em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--wine-bright);
+  }
+  
+  .char-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--smoke);
+    border-bottom: 1px solid var(--smoke);
+  }
+  
+  .char-card {
+    padding: 5rem 3rem;
+    position: relative;
+    transition: background 0.6s;
+    cursor: pointer;
+  }
+  
+  .char-card:first-child {
+    border-right: 1px solid var(--smoke);
+  }
+  
+  .char-card:hover {
+    background: rgba(107, 31, 45, 0.06);
+  }
+  
+  .char-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  
+  .char-visual {
+    width: 100%;
+    height: 380px;
+    background: var(--smoke);
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .char-card:hover .char-visual {
+    transform: scale(1.02);
+  }
+  
+  .char-visual svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  
+  .char-name {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    color: var(--bone);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  
+  .char-name em {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    color: var(--bone-soft);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+  }
+  
+  .char-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    color: var(--wine-bright);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--smoke);
+  }
+  
+  .char-desc {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: var(--bone-soft);
+    font-weight: 300;
+    margin-bottom: 2rem;
+  }
+  
+  .char-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    color: var(--ash);
+    text-transform: uppercase;
+  }
+  
+  .char-detail div {
+    display: flex;
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+  
+  .char-detail span:first-child {
+    min-width: 5rem;
+    color: var(--gold-soft);
+  }
+  
+  .char-detail span:last-child {
+    color: var(--bone-soft);
+    font-family: 'Noto Serif KR', serif;
+    text-transform: none;
+    letter-spacing: 0.05em;
+  }
+  
+  .char-quote {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--smoke);
+    font-family: 'Nanum Myeongjo', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--bone);
+    line-height: 1.7;
+  }
+  
+  /* ========= ENDINGS ========= */
+  .endings {
+    padding: 10rem 6vw;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .endings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 6rem;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .endings-header h2 {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--bone);
+    margin-top: 1rem;
+    line-height: 1.1;
+  }
+  
+  .endings-header p {
+    max-width: 380px;
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: var(--bone-soft);
+  }
+  
+  .endings-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--smoke);
+    border: 1px solid var(--smoke);
+  }
+  
+  .ending-card {
+    background: var(--ink);
+    padding: 3rem 2.5rem;
+    position: relative;
+    transition: all 0.6s;
+    cursor: pointer;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .ending-card:hover {
+    background: var(--wine-deep);
+  }
+  
+  .ending-card:hover .ending-mark {
+    color: var(--bone);
+  }
+  
+  .ending-mark {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 800;
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--wine);
+    transition: color 0.6s;
+  }
+  
+  .ending-card[data-tone="bad"] .ending-mark { color: var(--ash); }
+  .ending-card[data-tone="true"] .ending-mark { color: var(--gold); }
+  
+  .ending-info {
+    margin-top: 2rem;
+  }
+  
+  .ending-code {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  
+  .ending-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--bone);
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  
+  .ending-desc {
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: var(--bone-soft);
+    font-weight: 300;
+  }
+  
+  /* ========= AESTHETIC / MOODBOARD ========= */
+  .aesthetic {
+    padding: 10rem 6vw;
+    background: var(--ink-deep);
+    position: relative;
+    z-index: 2;
+  }
+  
+  .aesthetic-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 280px);
+    gap: 1.5rem;
+    margin-top: 5rem;
+  }
+  
+  .aesthetic-tile {
+    background: var(--smoke);
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: transform 0.6s;
+  }
+  
+  .aesthetic-tile:hover {
+    transform: translateY(-4px);
+  }
+  
+  .aesthetic-tile.large {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  
+  .aesthetic-tile.tall {
+    grid-row: span 2;
+  }
+  
+  .aesthetic-tile-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  
+  .aesthetic-tile-bg svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .aesthetic-tile-content {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .aesthetic-tile-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  
+  .aesthetic-tile-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--bone);
+  }
+  
+  .aesthetic-tile.large .aesthetic-tile-title {
+    font-size: 2rem;
+  }
+  
+  /* ========= FOOTER / CTA ========= */
+  .cta {
+    padding: 12rem 6vw 8rem;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .cta-mark {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: 0.5em;
+    color: var(--wine);
+    margin-bottom: 2rem;
+  }
+  
+  .cta h2 {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 6rem);
+    color: var(--bone);
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+  }
+  
+  .cta h2 em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--wine-bright);
+  }
+  
+  .cta-desc {
+    max-width: 540px;
+    margin: 0 auto 4rem;
+    font-size: 1rem;
+    line-height: 2;
+    color: var(--bone-soft);
+  }
+  
+  .cta-form {
+    max-width: 480px;
+    margin: 0 auto 6rem;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--bone-soft);
+    padding-bottom: 0.5rem;
+  }
+  
+  .cta-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--bone);
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1rem;
+    padding: 0.8rem 0;
+    outline: none;
+  }
+  
+  .cta-form input::placeholder {
+    color: var(--ash);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    letter-spacing: 0.1em;
+  }
+  
+  .cta-form button {
+    background: transparent;
+    border: none;
+    color: var(--bone);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.8rem 1.5rem;
+    transition: color 0.4s;
+  }
+  
+  .cta-form button:hover {
+    color: var(--wine-bright);
+  }
+  
+  .cta-divider {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--wine), transparent);
+    margin: 0 auto 3rem;
+  }
+  
+  .cta-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding-top: 4rem;
+    border-top: 1px solid var(--smoke);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--ash);
+    text-transform: uppercase;
+  }
+  
+  .cta-footer-mark {
+    color: var(--gold);
+    font-style: italic;
+  }
+  
+  /* ========= REVEAL ANIMATIONS ========= */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* ========= RESPONSIVE ========= */
+  @media (max-width: 968px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 8rem 6vw 4rem;
+      min-height: auto;
+    }
+    .hero-right {
+      height: 50vh;
+      order: -1;
+    }
+    .vertical-text { display: none; }
+    .story-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .char-grid { grid-template-columns: 1fr; }
+    .char-card:first-child { border-right: none; border-bottom: 1px solid var(--smoke); }
+    .endings-grid { grid-template-columns: 1fr; }
+    .aesthetic-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(4, 200px); }
+    .aesthetic-tile.large { grid-column: span 2; grid-row: span 1; }
+    .aesthetic-tile.tall { grid-row: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Falling ash particles -->
+<div class="ash-container" id="ashContainer"></div>
+
+<!-- Vertical decoration -->
+<div class="vertical-text">SIHAN — 2026 — INTERACTIVE NOVEL</div>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-mark">
+    재의 무게
+    <span>The Weight of Ash</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#story">Story</a></li>
+    <li><a href="#characters">Characters</a></li>
+    <li><a href="#endings">Endings</a></li>
+    <li><a href="#aesthetic">Aesthetic</a></li>
+    <li><a href="#cta">Register</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-subtitle">A Noir Interactive Novel · 2026</div>
+    <h1 class="hero-title">
+      <span class="char">재</span><span class="char">의</span><span class="char"> </span><span class="char">무</span><span class="char">게</span>
+    </h1>
+    <div class="hero-title-en">The Weight of Ash</div>
+    <p class="hero-desc">
+      장례식장은 사람이 사라지는 곳이 아니다. 그곳은 사람의 마지막 거짓말이 묻히는 곳이다. 7년 전 죽인 소녀의 어머니가 진실을 의뢰하러 찾아왔다. 그리고 나의 회장님은 — 이미 모든 것을 알고 있었다.
+    </p>
+    <div class="hero-cta">
+      <a href="#cta" class="btn-primary">사전 등록</a>
+      <a href="#story" class="btn-secondary">Read the prologue</a>
+    </div>
+  </div>
+  
+  <div class="hero-right">
+    <div class="camellia-frame">
+      <!-- White Camellia SVG -->
+      <svg class="camellia" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="petalGrad" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ebe4d4" stop-opacity="0.95"/>
+            <stop offset="60%" stop-color="#c9bfa8" stop-opacity="0.85"/>
+            <stop offset="100%" stop-color="#6b5a3f" stop-opacity="0.4"/>
+          </radialGradient>
+          <radialGradient id="petalShadow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#3a3530" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#3a3530" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="centerGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#8a7654"/>
+            <stop offset="60%" stop-color="#6b1f2d"/>
+            <stop offset="100%" stop-color="#3d1118"/>
+          </radialGradient>
+          <filter id="softBlur">
+            <feGaussianBlur stdDeviation="0.5"/>
+          </filter>
+        </defs>
+        
+        <!-- Outer petals -->
+        <g transform="translate(200, 200)" filter="url(#softBlur)">
+          <ellipse cx="0" cy="-110" rx="55" ry="95" fill="url(#petalGrad)" opacity="0.75" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-110" rx="55" ry="95" fill="url(#petalGrad)" opacity="0.75" transform="rotate(45)"/>
+          <ellipse cx="0" cy="-110" rx="55" ry="95" fill="url(#petalGrad)" opacity="0.75" transform="rotate(90)"/>
+          <ellipse cx="0" cy="-110" rx="55" ry="95" fill="url(#petalGrad)" opacity="0.75" transform="rotate(135)"/>
+          <ellipse cx="0" cy="-110" rx="55" ry="95" fill="url(#petalGrad)" opacity="0.75" transform="rotate(180)"/>
+          <ellipse cx="0" cy="-110" rx="55" ry="95" fill="url(#petalGrad)" opacity="0.75" transform="rotate(225)"/>
+          <ellipse cx="0" cy="-110" rx="55" ry="95" fill="url(#petalGrad)" opacity="0.75" transform="rotate(270)"/>
+          <ellipse cx="0" cy="-110" rx="55" ry="95" fill="url(#petalGrad)" opacity="0.75" transform="rotate(315)"/>
+        </g>
+        
+        <!-- Middle petals -->
+        <g transform="translate(200, 200)">
+          <ellipse cx="0" cy="-75" rx="40" ry="65" fill="url(#petalGrad)" opacity="0.9" transform="rotate(22.5)"/>
+          <ellipse cx="0" cy="-75" rx="40" ry="65" fill="url(#petalGrad)" opacity="0.9" transform="rotate(67.5)"/>
+          <ellipse cx="0" cy="-75" rx="40" ry="65" fill="url(#petalGrad)" opacity="0.9" transform="rotate(112.5)"/>
+          <ellipse cx="0" cy="-75" rx="40" ry="65" fill="url(#petalGrad)" opacity="0.9" transform="rotate(157.5)"/>
+          <ellipse cx="0" cy="-75" rx="40" ry="65" fill="url(#petalGrad)" opacity="0.9" transform="rotate(202.5)"/>
+          <ellipse cx="0" cy="-75" rx="40" ry="65" fill="url(#petalGrad)" opacity="0.9" transform="rotate(247.5)"/>
+          <ellipse cx="0" cy="-75" rx="40" ry="65" fill="url(#petalGrad)" opacity="0.9" transform="rotate(292.5)"/>
+          <ellipse cx="0" cy="-75" rx="40" ry="65" fill="url(#petalGrad)" opacity="0.9" transform="rotate(337.5)"/>
+        </g>
+        
+        <!-- Inner petals -->
+        <g transform="translate(200, 200)">
+          <ellipse cx="0" cy="-45" rx="28" ry="42" fill="url(#petalGrad)" opacity="1" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-45" rx="28" ry="42" fill="url(#petalGrad)" opacity="1" transform="rotate(60)"/>
+          <ellipse cx="0" cy="-45" rx="28" ry="42" fill="url(#petalGrad)" opacity="1" transform="rotate(120)"/>
+          <ellipse cx="0" cy="-45" rx="28" ry="42" fill="url(#petalGrad)" opacity="1" transform="rotate(180)"/>
+          <ellipse cx="0" cy="-45" rx="28" ry="42" fill="url(#petalGrad)" opacity="1" transform="rotate(240)"/>
+          <ellipse cx="0" cy="-45" rx="28" ry="42" fill="url(#petalGrad)" opacity="1" transform="rotate(300)"/>
+        </g>
+        
+        <!-- Shadow under center -->
+        <circle cx="200" cy="200" r="50" fill="url(#petalShadow)"/>
+        
+        <!-- Center -->
+        <circle cx="200" cy="200" r="32" fill="url(#centerGrad)"/>
+        
+        <!-- Stamens -->
+        <g transform="translate(200, 200)">
+          <g opacity="0.9">
+            <line x1="0" y1="0" x2="0" y2="-22" stroke="#8a7654" stroke-width="1.2"/>
+            <line x1="0" y1="0" x2="14" y2="-17" stroke="#8a7654" stroke-width="1.2"/>
+            <line x1="0" y1="0" x2="22" y2="0" stroke="#8a7654" stroke-width="1.2"/>
+            <line x1="0" y1="0" x2="14" y2="17" stroke="#8a7654" stroke-width="1.2"/>
+            <line x1="0" y1="0" x2="0" y2="22" stroke="#8a7654" stroke-width="1.2"/>
+            <line x1="0" y1="0" x2="-14" y2="17" stroke="#8a7654" stroke-width="1.2"/>
+            <line x1="0" y1="0" x2="-22" y2="0" stroke="#8a7654" stroke-width="1.2"/>
+            <line x1="0" y1="0" x2="-14" y2="-17" stroke="#8a7654" stroke-width="1.2"/>
+            
+            <circle cx="0" cy="-24" r="2.5" fill="#ebe4d4"/>
+            <circle cx="16" cy="-19" r="2.5" fill="#ebe4d4"/>
+            <circle cx="24" cy="0" r="2.5" fill="#ebe4d4"/>
+            <circle cx="16" cy="19" r="2.5" fill="#ebe4d4"/>
+            <circle cx="0" cy="24" r="2.5" fill="#ebe4d4"/>
+            <circle cx="-16" cy="19" r="2.5" fill="#ebe4d4"/>
+            <circle cx="-24" cy="0" r="2.5" fill="#ebe4d4"/>
+            <circle cx="-16" cy="-19" r="2.5" fill="#ebe4d4"/>
+          </g>
+        </g>
+      </svg>
+      
+      <div class="quote-overlay">
+        <p>"묻힌 것은 반드시 다시 나옵니다.<br>우리가 어떻게 다루느냐에 따라 달라질 뿐이지요."</p>
+        <span>— 윤서하</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="scroll-indicator">Scroll</div>
+</section>
+
+<!-- STORY -->
+<section class="story" id="story">
+  <div class="story-grid">
+    <div class="story-header reveal">
+      <div class="section-label">Chapter Zero</div>
+      <h2>마지막 거래는<br>장례식장에서<br><em>이루어진다</em></h2>
+      <div class="story-meta">
+        <span><strong>장르</strong>  모던 누아르 BL</span>
+        <span><strong>분량</strong>  6 챕터 · 6 엔딩</span>
+        <span><strong>플레이</strong>  약 12 — 15시간</span>
+        <span><strong>출시</strong>  2026 Q3 예정</span>
+      </div>
+    </div>
+    
+    <div class="story-body reveal">
+      <p>
+        시한도시(始翰市). 15년 전 대화재로 구도심이 통째로 타버린 후, 그 위에 세워진 도시는 두 가지로 유명해졌다. 잿더미를 딛고 일어선 윤가(尹家)와 한가(韓家). 그리고 — 한국에서 가장 비싼 장례 산업.
+      </p>
+      <p>
+        강무진은 시한 장례원의 상담실장이다. 사람들은 그를 <em>송별객</em>이라고 부른다. 그가 나누는 대화는 항상 마지막 작별처럼 차갑고 정중하기 때문이다. 그러나 그가 진짜로 하는 일은 따로 있다. <strong style="color:var(--bone);font-weight:400">상류층의 비밀을 — 영원히 — 매장하는 것.</strong>
+      </p>
+      <blockquote>
+        오늘 한 어머니가 검은 한복을 입고 찾아왔다.<br>
+        그녀가 사진을 꺼냈다.<br>
+        그것은 내 지갑 속에 7년째 들어있던 그 아이였다.
+        <cite>— Prologue</cite>
+      </blockquote>
+      <p>
+        등 뒤에서 회장님의 부드러운 목소리가 들린다. "해보세요, 무진 씨. 답이 본인이라 해도." 무진은 그제야 깨닫는다. 그가 7년간 자기 곁에 둔 이 남자가 — 자기를 살릴지 죽일지, 충분히 보고 결정하려 했던 그 시선이 — 처음부터 자기를 향해 있었다는 것을.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section class="characters" id="characters">
+  <div class="characters-header reveal">
+    <div class="section-label" style="justify-content:center">
+      <span style="background:var(--gold);width:3rem;height:1px"></span>
+      Dramatis Personae
+      <span style="background:var(--gold);width:3rem;height:1px"></span>
+    </div>
+    <h2>두 사람은 <em>같은 화재</em>에서 살아남았다</h2>
+  </div>
+  
+  <div class="char-grid">
+    <!-- Character 1: 강무진 -->
+    <div class="char-card reveal">
+      <div class="char-number">No. 01 — Protagonist</div>
+      <div class="char-visual">
+        <svg viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bg1" cx="50%" cy="40%" r="80%">
+              <stop offset="0%" stop-color="#3a3530"/>
+              <stop offset="100%" stop-color="#0b0a09"/>
+            </radialGradient>
+            <linearGradient id="glove" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#1a1815"/>
+              <stop offset="100%" stop-color="#050403"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="380" fill="url(#bg1)"/>
+          
+          <!-- Texture lines -->
+          <g opacity="0.08" stroke="#ebe4d4" stroke-width="0.5">
+            <line x1="0" y1="80" x2="400" y2="80"/>
+            <line x1="0" y1="160" x2="400" y2="160"/>
+            <line x1="0" y1="240" x2="400" y2="240"/>
+            <line x1="0" y1="320" x2="400" y2="320"/>
+          </g>
+          
+          <!-- Black glove silhouette holding camellia -->
+          <g transform="translate(200, 200)">
+            <!-- Glove/hand -->
+            <path d="M -60,80 Q -80,40 -70,0 Q -60,-30 -30,-40 Q 0,-50 30,-40 Q 60,-30 70,0 Q 80,40 60,80 Q 50,100 0,105 Q -50,100 -60,80 Z" 
+                  fill="url(#glove)" stroke="#0b0a09" stroke-width="1"/>
+            
+            <!-- Fingers gripping -->
+            <ellipse cx="-25" cy="-30" rx="14" ry="35" fill="url(#glove)"/>
+            <ellipse cx="0" cy="-40" rx="14" ry="40" fill="url(#glove)"/>
+            <ellipse cx="25" cy="-30" rx="14" ry="35" fill="url(#glove)"/>
+            
+            <!-- Small white camellia held -->
+            <g transform="translate(0, -60) scale(0.4)">
+              <circle r="35" fill="#ebe4d4" opacity="0.4"/>
+              <circle r="25" fill="#ebe4d4" opacity="0.6"/>
+              <circle r="15" fill="#6b1f2d"/>
+            </g>
+            
+            <!-- Wrist -->
+            <rect x="-50" y="80" width="100" height="60" fill="url(#glove)"/>
+          </g>
+          
+          <!-- Burn scar suggestion (red glow at wrist) -->
+          <ellipse cx="200" cy="330" rx="60" ry="8" fill="#6b1f2d" opacity="0.4"/>
+          
+          <!-- Korean character mark -->
+          <text x="40" y="50" font-family="Nanum Myeongjo, serif" font-size="40" font-weight="800" fill="#6b1f2d" opacity="0.5">武</text>
+          <text x="340" y="350" font-family="Cormorant Garamond, serif" font-size="12" font-style="italic" fill="#8a7654" opacity="0.8" letter-spacing="0.3em">I.</text>
+        </svg>
+      </div>
+      <div class="char-name">
+        강무진
+        <em>Kang Mu-jin</em>
+      </div>
+      <div class="char-role">송별객 · The Sender-off</div>
+      <p class="char-desc">
+        28세. 시한 장례원 상담실장. 7년 전 폭력 조직의 행동대원으로 살던 시절, 자신이 누군지도 모르는 한 소녀를 죽였다. 그날 떨어진 사진을 지갑에 넣고 다닌다 — 잊지 않기 위해서가 아니라, 자기를 매일 처형하기 위해서.
+      </p>
+      <div class="char-detail">
+        <div><span>Age</span><span>28세</span></div>
+        <div><span>Role</span><span>장례 컨설턴트 / 정보 브로커</span></div>
+        <div><span>Mark</span><span>검은 장갑, 오른손 화상 흉터</span></div>
+        <div><span>Weakness</span><span>어린아이 앞에서 무너짐</span></div>
+      </div>
+      <div class="char-quote">
+        "이름을 모르는 사람의 장례는 가장 무거워요.<br>슬퍼할 사람이 정해지지 않았으니까."
+      </div>
+    </div>
+    
+    <!-- Character 2: 윤서하 -->
+    <div class="char-card reveal">
+      <div class="char-number">No. 02 — The Owner</div>
+      <div class="char-visual">
+        <svg viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bg2" cx="50%" cy="40%" r="80%">
+              <stop offset="0%" stop-color="#3d1118"/>
+              <stop offset="100%" stop-color="#0b0a09"/>
+            </radialGradient>
+            <linearGradient id="lighter" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#d4cdb8"/>
+              <stop offset="50%" stop-color="#8a7654"/>
+              <stop offset="100%" stop-color="#3d3220"/>
+            </linearGradient>
+            <radialGradient id="flame" cx="50%" cy="100%" r="80%">
+              <stop offset="0%" stop-color="#ebe4d4" stop-opacity="0"/>
+              <stop offset="60%" stop-color="#8b2838" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#6b1f2d" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="400" height="380" fill="url(#bg2)"/>
+          
+          <!-- Subtle pattern -->
+          <g opacity="0.08" stroke="#ebe4d4" stroke-width="0.5">
+            <circle cx="200" cy="190" r="120" fill="none"/>
+            <circle cx="200" cy="190" r="80" fill="none"/>
+            <circle cx="200" cy="190" r="40" fill="none"/>
+          </g>
+          
+          <!-- Hand silhouette holding lighter (more refined, elegant) -->
+          <g transform="translate(200, 220)">
+            <!-- Subtle flame glow -->
+            <ellipse cx="0" cy="-60" rx="40" ry="60" fill="url(#flame)" opacity="0"/>
+            
+            <!-- Silver lighter (vertical, elegant) -->
+            <g transform="rotate(-10)">
+              <rect x="-22" y="-50" width="44" height="90" rx="3" fill="url(#lighter)" stroke="#ebe4d4" stroke-width="0.5" opacity="0.95"/>
+              <!-- Top cap -->
+              <rect x="-22" y="-58" width="44" height="12" rx="2" fill="#3d3220"/>
+              <!-- Hinge detail -->
+              <line x1="-22" y1="-46" x2="22" y2="-46" stroke="#3d3220" stroke-width="0.8"/>
+              <!-- Engraving -->
+              <text x="0" y="0" text-anchor="middle" font-family="Cormorant Garamond, serif" font-style="italic" font-size="11" fill="#3d3220" opacity="0.7">尹</text>
+              <!-- Highlight -->
+              <rect x="-18" y="-44" width="3" height="80" fill="#ebe4d4" opacity="0.3"/>
+            </g>
+            
+            <!-- Fingers holding (elegant) -->
+            <g opacity="0.85">
+              <ellipse cx="-25" cy="30" rx="10" ry="25" fill="#1a1815" transform="rotate(-10)"/>
+              <ellipse cx="25" cy="30" rx="10" ry="25" fill="#1a1815" transform="rotate(10)"/>
+            </g>
+          </g>
+          
+          <!-- Korean character mark -->
+          <text x="40" y="50" font-family="Nanum Myeongjo, serif" font-size="40" font-weight="800" fill="#8a7654" opacity="0.5">尹</text>
+          <text x="340" y="350" font-family="Cormorant Garamond, serif" font-size="12" font-style="italic" fill="#8a7654" opacity="0.8" letter-spacing="0.3em">II.</text>
+          
+          <!-- Dimple/smile suggestion (decorative curl) -->
+          <path d="M 280 80 Q 320 90 340 70" stroke="#8a7654" stroke-width="0.5" fill="none" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="char-name">
+        윤서하
+        <em>Yoon Seo-ha</em>
+      </div>
+      <div class="char-role">회장님 · The Sweet Predator</div>
+      <p class="char-desc">
+        30세. 윤그룹 회장. 시한도시의 왕자. 늘 부드럽게 웃고 깍듯이 말하는 자선가. 그러나 그의 미소는 한 번도 눈에 닿은 적이 없다. 15년 전 화재로 사촌동생을 잃었다. 7년간 그 죽음의 책임자를 곁에 두고 — 매일 그가 자기 자신을 처형하는 것을 지켜봐 왔다.
+      </p>
+      <div class="char-detail">
+        <div><span>Age</span><span>30세</span></div>
+        <div><span>Role</span><span>윤그룹 회장 / 장례원 오너</span></div>
+        <div><span>Mark</span><span>한 번도 켜지 않은 은제 라이터</span></div>
+        <div><span>Weakness</span><span>본인도 모르는 자기 마음</span></div>
+      </div>
+      <div class="char-quote">
+        "당신을 7년 동안 보고 있었어요.<br>이제, 결정해야 할 시간이에요."
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENDINGS -->
+<section class="endings" id="endings">
+  <div class="endings-header reveal">
+    <div>
+      <div class="section-label">Six Paths to the Ash</div>
+      <h2>당신의 선택이<br>이 도시의 마지막을 결정한다</h2>
+    </div>
+    <p>
+      6 챕터에 걸친 5개의 결정적 분기점. 호감도·죄책감·증거의 무게가 쌓여 — 여섯 갈래의 결말로 흩어진다. 어떤 길이 가장 무거울지는 당신만이 알 수 있다.
+    </p>
+  </div>
+  
+  <div class="endings-grid">
+    <div class="ending-card reveal">
+      <div class="ending-mark">自</div>
+      <div class="ending-info">
+        <div class="ending-code">Ending A</div>
+        <div class="ending-title">불사조</div>
+        <div class="ending-desc">모든 죄를 자수하고 법의 무게를 받아들인다. 그는 출소를 기다리겠다고 약속한다. 가장 무거운, 그러나 가장 정직한 길.</div>
+      </div>
+    </div>
+    
+    <div class="ending-card reveal">
+      <div class="ending-mark">黑</div>
+      <div class="ending-info">
+        <div class="ending-code">Ending B</div>
+        <div class="ending-title">검은 결혼</div>
+        <div class="ending-desc">그의 손을 잡고 도시의 어둠을 통째로 장악한다. 잿더미 위에 두 사람이 함께 쌓는 검은 왕국. 다크 BL 팬을 위한 길.</div>
+      </div>
+    </div>
+    
+    <div class="ending-card reveal">
+      <div class="ending-mark">灰</div>
+      <div class="ending-info">
+        <div class="ending-code">Ending C</div>
+        <div class="ending-title">잿더미</div>
+        <div class="ending-desc">모든 죄를 혼자 짊어지고 사라진다. 7년 후, 시골 장례원에서 일하는 그를 한 남자가 찾아온다. 자기희생의 순애 비극.</div>
+      </div>
+    </div>
+    
+    <div class="ending-card reveal" data-tone="true">
+      <div class="ending-mark">白</div>
+      <div class="ending-info">
+        <div class="ending-code">True Ending</div>
+        <div class="ending-title">흰 동백</div>
+        <div class="ending-desc">두 사람의 손이 만들어낸 정의로 한규민을 무너뜨린다. 시한 장례원이 진짜 의미의 작별 장소로 다시 태어난다.</div>
+      </div>
+    </div>
+    
+    <div class="ending-card reveal" data-tone="bad">
+      <div class="ending-mark">重</div>
+      <div class="ending-info">
+        <div class="ending-code">Ending E</div>
+        <div class="ending-title">재의 무게</div>
+        <div class="ending-desc">해리가 죽는다. 그는 자기 자신을 잃는다. 어떤 손도 그를 끌어올리지 못한다. 트라우마가 무게를 이긴 길.</div>
+      </div>
+    </div>
+    
+    <div class="ending-card reveal">
+      <div class="ending-mark">再</div>
+      <div class="ending-info">
+        <div class="ending-code">Ending F</div>
+        <div class="ending-title">두 번째 삶</div>
+        <div class="ending-desc">박지오의 손을 잡는다. 형사가 된 옛 친구와 함께 도시의 어둠을 사냥하는 비공식 자경단의 길. 서브 로맨스 루트.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AESTHETIC -->
+<section class="aesthetic" id="aesthetic">
+  <div class="reveal">
+    <div class="section-label">Visual Vocabulary</div>
+    <h2 style="font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:clamp(2.5rem,5vw,4rem);color:var(--bone);margin-top:1rem;line-height:1.1">
+      모든 사물에는 <em style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--wine-bright)">무게</em>가 있다
+    </h2>
+  </div>
+  
+  <div class="aesthetic-grid">
+    <div class="aesthetic-tile large reveal">
+      <div class="aesthetic-tile-bg">
+        <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <radialGradient id="moodGrad" cx="30%" cy="30%" r="80%">
+              <stop offset="0%" stop-color="#3d1118"/>
+              <stop offset="100%" stop-color="#0b0a09"/>
+            </radialGradient>
+          </defs>
+          <rect width="600" height="600" fill="url(#moodGrad)"/>
+          <!-- Atmospheric smoke -->
+          <g opacity="0.3">
+            <ellipse cx="150" cy="500" rx="200" ry="60" fill="#6b1f2d" opacity="0.3"/>
+            <ellipse cx="450" cy="450" rx="180" ry="80" fill="#3a3530" opacity="0.4"/>
+            <ellipse cx="300" cy="550" rx="250" ry="50" fill="#1a1815" opacity="0.5"/>
+          </g>
+          <!-- Single white camellia silhouette -->
+          <g transform="translate(450, 200)" opacity="0.7">
+            <circle r="50" fill="#ebe4d4" opacity="0.3"/>
+            <circle r="35" fill="#ebe4d4" opacity="0.5"/>
+            <circle r="20" fill="#ebe4d4" opacity="0.7"/>
+            <circle r="10" fill="#6b1f2d"/>
+          </g>
+          <!-- Hanja characters in background -->
+          <text x="80" y="280" font-family="Nanum Myeongjo, serif" font-size="180" font-weight="800" fill="#ebe4d4" opacity="0.06">灰</text>
+        </svg>
+      </div>
+      <div class="aesthetic-tile-content">
+        <div class="aesthetic-tile-label">01 · Atmosphere</div>
+        <div class="aesthetic-tile-title">잿더미의 도시,<br>마지막 장미의 도시</div>
+      </div>
+    </div>
+    
+    <div class="aesthetic-tile reveal">
+      <div class="aesthetic-tile-bg">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="400" fill="#1a1815"/>
+          <!-- Black glove abstract -->
+          <g transform="translate(200, 200)">
+            <path d="M-80,-60 Q-100,0 -80,60 Q-40,90 40,90 Q100,80 100,0 Q90,-60 0,-90 Q-60,-90 -80,-60 Z" 
+                  fill="#050403" stroke="#3a3530" stroke-width="1"/>
+            <path d="M-60,-40 Q-70,-10 -60,30 Q-30,55 30,55 Q70,45 70,5 Q60,-40 0,-60 Q-40,-60 -60,-40 Z" 
+                  fill="none" stroke="#6b1f2d" stroke-width="0.5" opacity="0.3"/>
+          </g>
+          <text x="20" y="40" font-family="Cormorant Garamond, serif" font-style="italic" font-size="14" fill="#8a7654" opacity="0.6" letter-spacing="0.3em">II.</text>
+        </svg>
+      </div>
+      <div class="aesthetic-tile-content">
+        <div class="aesthetic-tile-label">02 · Object</div>
+        <div class="aesthetic-tile-title">검은 장갑</div>
+      </div>
+    </div>
+    
+    <div class="aesthetic-tile tall reveal">
+      <div class="aesthetic-tile-bg">
+        <svg viewBox="0 0 400 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="lighter2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#d4cdb8"/>
+              <stop offset="50%" stop-color="#8a7654"/>
+              <stop offset="100%" stop-color="#3d3220"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="800" fill="#050403"/>
+          <!-- Vertical lighter -->
+          <g transform="translate(200, 400)">
+            <rect x="-40" y="-150" width="80" height="280" rx="6" fill="url(#lighter2)"/>
+            <rect x="-40" y="-170" width="80" height="20" rx="3" fill="#3d3220"/>
+            <line x1="-40" y1="-130" x2="40" y2="-130" stroke="#3d3220" stroke-width="2"/>
+            <text x="0" y="0" text-anchor="middle" font-family="Nanum Myeongjo, serif" font-size="32" font-weight="800" fill="#3d3220" opacity="0.6">尹</text>
+            <rect x="-30" y="-120" width="6" height="240" fill="#ebe4d4" opacity="0.2"/>
+          </g>
+          <text x="20" y="60" font-family="Cormorant Garamond, serif" font-style="italic" font-size="14" fill="#8a7654" opacity="0.6" letter-spacing="0.3em">III.</text>
+        </svg>
+      </div>
+      <div class="aesthetic-tile-content">
+        <div class="aesthetic-tile-label">03 · Object</div>
+        <div class="aesthetic-tile-title">한 번도 켜지 않은<br>은제 라이터</div>
+      </div>
+    </div>
+    
+    <div class="aesthetic-tile reveal">
+      <div class="aesthetic-tile-bg">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="400" fill="#0b0a09"/>
+          <!-- Multiple small camellias arrangement -->
+          <g opacity="0.8">
+            <g transform="translate(100, 150)">
+              <circle r="40" fill="#ebe4d4" opacity="0.3"/>
+              <circle r="28" fill="#ebe4d4" opacity="0.5"/>
+              <circle r="14" fill="#6b1f2d"/>
+            </g>
+            <g transform="translate(280, 120)">
+              <circle r="30" fill="#ebe4d4" opacity="0.3"/>
+              <circle r="20" fill="#ebe4d4" opacity="0.5"/>
+              <circle r="10" fill="#6b1f2d"/>
+            </g>
+            <g transform="translate(200, 280)">
+              <circle r="45" fill="#ebe4d4" opacity="0.3"/>
+              <circle r="32" fill="#ebe4d4" opacity="0.5"/>
+              <circle r="16" fill="#6b1f2d"/>
+            </g>
+          </g>
+          <text x="20" y="40" font-family="Cormorant Garamond, serif" font-style="italic" font-size="14" fill="#8a7654" opacity="0.6" letter-spacing="0.3em">IV.</text>
+        </svg>
+      </div>
+      <div class="aesthetic-tile-content">
+        <div class="aesthetic-tile-label">04 · Symbol</div>
+        <div class="aesthetic-tile-title">흰 동백</div>
+      </div>
+    </div>
+    
+    <div class="aesthetic-tile reveal">
+      <div class="aesthetic-tile-bg">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <radialGradient id="jade" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#5a7558"/>
+              <stop offset="60%" stop-color="#2d3d2c"/>
+              <stop offset="100%" stop-color="#0f1a0e"/>
+            </radialGradient>
+          </defs>
+          <rect width="400" height="400" fill="#1a1815"/>
+          <!-- Jade ring -->
+          <g transform="translate(200, 200)">
+            <circle r="90" fill="url(#jade)" stroke="#ebe4d4" stroke-width="0.5" opacity="0.9"/>
+            <circle r="55" fill="#0b0a09"/>
+            <circle r="55" fill="none" stroke="#ebe4d4" stroke-width="0.3" opacity="0.4"/>
+            <!-- Highlight -->
+            <ellipse cx="-30" cy="-30" rx="20" ry="10" fill="#ebe4d4" opacity="0.3"/>
+          </g>
+          <text x="20" y="40" font-family="Cormorant Garamond, serif" font-style="italic" font-size="14" fill="#8a7654" opacity="0.6" letter-spacing="0.3em">V.</text>
+        </svg>
+      </div>
+      <div class="aesthetic-tile-content">
+        <div class="aesthetic-tile-label">05 · Villain</div>
+        <div class="aesthetic-tile-title">한 회장의 옥반지</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="cta">
+  <div class="reveal">
+    <div class="cta-mark">尹 · 韓 · 姜</div>
+    <h2>당신은 어떤 <em>작별</em>을 선택하시겠습니까</h2>
+    <p class="cta-desc">
+      2026년 3분기 출시 예정. 사전 등록자에게는 프롤로그 챕터 사전 체험권, 한정판 디지털 아트북, 그리고 — 외전 한 편이 제공됩니다.
+    </p>
+    
+    <form class="cta-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Registered'; setTimeout(()=>{this.querySelector('button').textContent='Register →'}, 2000);">
+      <input type="email" placeholder="your.last.name@email.com" required>
+      <button type="submit">Register →</button>
+    </form>
+    
+    <div class="cta-divider"></div>
+    
+    <div class="cta-footer">
+      <div>© 2026 · Sihan Studio</div>
+      <div class="cta-footer-mark">All ash settles eventually.</div>
+      <div>인터랙티브 비주얼 노벨 · 18+</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Generate falling ash particles
+  const ashContainer = document.getElementById('ashContainer');
+  for (let i = 0; i < 30; i++) {
+    const ash = document.createElement('div');
+    ash.className = 'ash';
+    ash.style.left = Math.random() * 100 + '%';
+    ash.style.animationDuration = (15 + Math.random() * 15) + 's';
+    ash.style.animationDelay = (Math.random() * 20) + 's';
+    ash.style.width = (1 + Math.random() * 2) + 'px';
+    ash.style.height = ash.style.width;
+    ash.style.opacity = (0.2 + Math.random() * 0.4);
+    ashContainer.appendChild(ash);
+  }
+  
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+  
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  
+  // Stagger reveal for ending cards
+  const endingCards = document.querySelectorAll('.ending-card');
+  endingCards.forEach((card, i) => {
+    card.style.transitionDelay = (i * 0.08) + 's';
+  });
+  
+  // Stagger reveal for aesthetic tiles
+  const aestheticTiles = document.querySelectorAll('.aesthetic-tile');
+  aestheticTiles.forEach((tile, i) => {
+    tile.style.transitionDelay = (i * 0.1) + 's';
+  });
+</script>
+
+</body>
+</html>

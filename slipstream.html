@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLIPSTREAM · 슬립스트림 — An Interactive Romance Novel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@300..700&family=Noto+Serif+KR:wght@300..700&family=Noto+Sans+KR:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #efe7d6;
+    --paper-warm: #e6dcc6;
+    --paper-deep: #d9cdb1;
+    --ink: #0b0a09;
+    --ink-soft: #1c1916;
+    --ink-mid: #3a3530;
+    --wine: #6b1828;
+    --wine-dark: #3a0e16;
+    --wine-bright: #8d2535;
+    --silver: #c4c8cc;
+    --silver-dim: #8a8e93;
+    --silver-deep: #4a4d52;
+    --cobalt: #1e3a8a;
+    --cobalt-bright: #3461c7;
+    --caution: #d4a017;
+    --bone: #f7f2e6;
+
+    --font-display: 'Fraunces', 'Noto Serif KR', Georgia, serif;
+    --font-body: 'Instrument Sans', 'Noto Sans KR', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ━━━━━━━━━━ NAV ━━━━━━━━━━ */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(11,10,9,0.9) 0%, rgba(11,10,9,0) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .logo::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--wine-bright);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--wine-bright);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .nav-links a {
+    color: var(--silver);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--paper); }
+  .nav-links a::before {
+    content: attr(data-num);
+    color: var(--silver-deep);
+    margin-right: 0.6em;
+    font-size: 0.85em;
+  }
+
+  /* ━━━━━━━━━━ HERO ━━━━━━━━━━ */
+  .hero {
+    min-height: 100vh;
+    padding: 6rem 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(107,24,40,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 70%, rgba(30,58,138,0.12) 0%, transparent 60%),
+      linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%);
+    z-index: -1;
+  }
+
+  /* Decorative speed lines */
+  .speed-lines {
+    position: absolute;
+    top: 50%;
+    right: -10%;
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--wine-bright) 50%, transparent 100%);
+    opacity: 0.4;
+    transform: rotate(-2deg);
+  }
+  .speed-lines::before, .speed-lines::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--silver) 50%, transparent 100%);
+    opacity: 0.3;
+  }
+  .speed-lines::before { top: -40px; }
+  .speed-lines::after { top: 40px; }
+
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+  }
+  .telemetry {
+    display: flex;
+    gap: 2rem;
+  }
+  .tel-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .tel-label { color: var(--silver-deep); font-size: 0.6rem; }
+  .tel-value { color: var(--paper); font-size: 0.85rem; font-weight: 500; }
+  .tel-value.live { color: var(--wine-bright); }
+
+  .hero-center {
+    margin: 4rem 0 2rem;
+  }
+
+  .hero-tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--silver-dim);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .hero-tag::before, .hero-tag::after {
+    content: '';
+    height: 1px;
+    background: var(--silver-deep);
+    flex: 0 0 40px;
+  }
+  .hero-tag::after { flex: 1; }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(4rem, 16vw, 14rem);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: var(--paper);
+    margin: 0;
+    position: relative;
+  }
+  .hero-title .i {
+    font-style: italic;
+    font-weight: 200;
+    color: var(--wine-bright);
+  }
+  .hero-title .ampersand {
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    letter-spacing: 0.5em;
+    color: var(--silver);
+    margin-top: 1rem;
+    text-indent: 0.5em;
+  }
+
+  .hero-bottom {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: end;
+  }
+
+  .hero-logline {
+    max-width: 480px;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.45;
+    color: var(--paper-warm);
+  }
+  .hero-logline em {
+    font-style: normal;
+    color: var(--wine-bright);
+    font-weight: 400;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-end;
+  }
+  .stat {
+    text-align: right;
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 200;
+    line-height: 1;
+    color: var(--paper);
+    display: block;
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+    margin-top: 0.4rem;
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--silver-dim);
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    animation: float 2.5s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+  .scroll-cue::after {
+    content: '';
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(180deg, var(--silver-dim) 0%, transparent 100%);
+  }
+
+  /* ━━━━━━━━━━ SECTION DEFAULTS ━━━━━━━━━━ */
+  section {
+    padding: 8rem 2rem;
+    position: relative;
+  }
+
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--wine-bright);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-num::before {
+    content: '';
+    height: 1px;
+    width: 60px;
+    background: var(--wine-bright);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+    color: var(--paper);
+  }
+  .section-title .italic {
+    font-style: italic;
+    color: var(--wine-bright);
+    font-weight: 400;
+  }
+
+  /* ━━━━━━━━━━ PREMISE ━━━━━━━━━━ */
+  .premise {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 10rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .premise::before {
+    content: 'ICARUS';
+    position: absolute;
+    top: 50%;
+    right: -2rem;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: right center;
+    font-family: var(--font-display);
+    font-weight: 200;
+    font-size: 12rem;
+    color: var(--paper-deep);
+    letter-spacing: -0.05em;
+    pointer-events: none;
+  }
+  .premise .section-num { color: var(--wine); }
+  .premise .section-num::before { background: var(--wine); }
+  .premise-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: start;
+    position: relative;
+    z-index: 2;
+  }
+  .premise-quote {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 2.2rem;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .premise-quote .em {
+    font-style: italic;
+    color: var(--wine);
+  }
+  .premise-body {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ink-mid);
+    padding-top: 0.5rem;
+  }
+  .premise-body p + p { margin-top: 1.2rem; }
+  .premise-body em {
+    font-style: italic;
+    color: var(--wine);
+    font-weight: 500;
+  }
+
+  /* ━━━━━━━━━━ DUAL ORBIT ━━━━━━━━━━ */
+  .orbit {
+    background: var(--ink-soft);
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 90vh;
+    position: relative;
+  }
+  .orbit::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent 0%, var(--silver-deep) 20%, var(--silver-deep) 80%, transparent 100%);
+  }
+  .orbit-panel {
+    padding: 6rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    min-height: 90vh;
+  }
+  .orbit-panel.river {
+    background: linear-gradient(135deg, rgba(107,24,40,0.15) 0%, transparent 60%);
+  }
+  .orbit-panel.sander {
+    background: linear-gradient(225deg, rgba(196,200,204,0.08) 0%, transparent 60%);
+  }
+  .orbit-num {
+    font-family: var(--font-display);
+    font-weight: 200;
+    font-size: 9rem;
+    line-height: 0.9;
+    color: var(--paper);
+    letter-spacing: -0.05em;
+  }
+  .orbit-num.wine { color: var(--wine-bright); }
+  .orbit-num.silver { color: var(--silver); }
+  .orbit-id {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--silver-dim);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .orbit-name {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--paper);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+  }
+  .orbit-name .italic {
+    font-style: italic;
+    font-weight: 300;
+  }
+  .orbit-tag {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.1rem;
+    color: var(--silver);
+    margin-bottom: 2rem;
+  }
+  .orbit-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--silver-dim);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--silver-deep);
+  }
+  .orbit-stat { display: flex; flex-direction: column; gap: 0.25rem; }
+  .orbit-stat .lbl { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver-deep); }
+  .orbit-stat .val { color: var(--paper); }
+
+  /* ━━━━━━━━━━ CAST ━━━━━━━━━━ */
+  .cast {
+    background: var(--ink);
+    padding: 8rem 2rem;
+  }
+  .cast-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .cast-card {
+    background: var(--ink-soft);
+    border: 1px solid var(--silver-deep);
+    padding: 1.75rem;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: hidden;
+    cursor: default;
+  }
+  .cast-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+  .cast-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+  .cast-card:hover::before { width: 100%; opacity: 0.08; }
+  .cast-card .num {
+    font-family: var(--font-display);
+    font-weight: 200;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .cast-card .role {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--silver-dim);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .cast-card .name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--paper);
+    margin-bottom: 0.2rem;
+    letter-spacing: -0.01em;
+  }
+  .cast-card .name-kr {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--silver);
+    margin-bottom: 1rem;
+    font-weight: 300;
+  }
+  .cast-card .desc {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--silver);
+  }
+  .cast-card .badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-top: 1rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--silver-deep);
+    width: 100%;
+  }
+
+  /* Asymmetric grid spans */
+  .cast-card:nth-child(1) { grid-column: span 5; --accent: var(--silver); }
+  .cast-card:nth-child(2) { grid-column: span 4; --accent: var(--wine-bright); }
+  .cast-card:nth-child(3) { grid-column: span 3; --accent: var(--cobalt-bright); }
+  .cast-card:nth-child(4) { grid-column: span 4; --accent: #2dd4bf; }
+  .cast-card:nth-child(5) { grid-column: span 3; --accent: #f0abfc; }
+  .cast-card:nth-child(6) { grid-column: span 5; --accent: var(--caution); }
+
+  /* ━━━━━━━━━━ ROUTES ━━━━━━━━━━ */
+  .routes {
+    background: var(--paper-warm);
+    color: var(--ink);
+    padding: 10rem 2rem;
+  }
+  .routes .section-num { color: var(--wine); }
+  .routes .section-num::before { background: var(--wine); }
+  .routes .section-title { color: var(--ink); }
+  .routes .section-title .italic { color: var(--wine); }
+
+  .routes-intro {
+    max-width: 600px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ink-mid);
+    margin-bottom: 4rem;
+  }
+  .routes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1300px;
+  }
+  .route-card {
+    background: var(--bone);
+    padding: 2.5rem 2rem;
+    border-top: 3px solid var(--accent);
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+  .route-card:hover { transform: translateY(-6px); }
+  .route-card .num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .route-card .for {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--silver-deep);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .route-card .name {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .route-card .trope {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--wine);
+    margin-bottom: 1.5rem;
+  }
+  .route-card .desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--ink-mid);
+  }
+  .route-card .lock {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: var(--wine);
+    text-transform: uppercase;
+  }
+  .route-card.locked .name { color: var(--ink-mid); }
+  .route-card:nth-child(1) { --accent: var(--silver-deep); }
+  .route-card:nth-child(2) { --accent: var(--cobalt); }
+  .route-card:nth-child(3) { --accent: #047857; }
+  .route-card:nth-child(4) { --accent: #c026d3; }
+  .route-card:nth-child(5) { --accent: var(--wine-dark); }
+  .route-card:nth-child(6) { --accent: var(--caution); }
+
+  /* ━━━━━━━━━━ SEASON ━━━━━━━━━━ */
+  .season {
+    background: var(--ink);
+    padding: 8rem 0 6rem;
+  }
+  .season .container {
+    padding: 0 2rem;
+    margin-bottom: 4rem;
+  }
+  .season-scroll {
+    overflow-x: auto;
+    padding: 0 2rem 3rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--silver-deep) transparent;
+  }
+  .season-scroll::-webkit-scrollbar { height: 6px; }
+  .season-scroll::-webkit-scrollbar-track { background: var(--ink-soft); }
+  .season-scroll::-webkit-scrollbar-thumb { background: var(--silver-deep); }
+  .season-track {
+    display: flex;
+    gap: 0;
+    position: relative;
+    padding-top: 3rem;
+    min-width: max-content;
+  }
+  .season-track::before {
+    content: '';
+    position: absolute;
+    top: 3.5rem;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      var(--silver-deep) 5%,
+      var(--silver-deep) 95%,
+      transparent 100%);
+  }
+  .gp {
+    flex: 0 0 200px;
+    padding: 0 0.5rem;
+    position: relative;
+  }
+  .gp::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 1rem;
+    width: 8px;
+    height: 8px;
+    background: var(--paper);
+    border-radius: 50%;
+    z-index: 2;
+  }
+  .gp.milestone::before {
+    background: var(--wine-bright);
+    width: 12px;
+    height: 12px;
+    top: -4px;
+    box-shadow: 0 0 16px var(--wine-bright);
+  }
+  .gp .ch {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--silver-deep);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+    padding-top: 1.5rem;
+  }
+  .gp .where {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--paper);
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.01em;
+  }
+  .gp .where .italic { font-style: italic; }
+  .gp .beat {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--silver);
+    padding-right: 1.5rem;
+  }
+  .gp.milestone .ch { color: var(--wine-bright); }
+
+  /* ━━━━━━━━━━ FEATURES ━━━━━━━━━━ */
+  .features {
+    background: var(--ink-soft);
+    padding: 10rem 2rem;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 4rem auto 0;
+  }
+  .feature {
+    border-top: 1px solid var(--silver-deep);
+    padding-top: 2rem;
+    position: relative;
+  }
+  .feature .num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--wine-bright);
+    margin-bottom: 1rem;
+  }
+  .feature h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.9rem;
+    color: var(--paper);
+    line-height: 1.15;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.01em;
+  }
+  .feature h3 .italic { font-style: italic; color: var(--wine-bright); }
+  .feature p {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--silver);
+  }
+
+  /* ━━━━━━━━━━ DLC TEASER ━━━━━━━━━━ */
+  .dlc {
+    background: linear-gradient(135deg, var(--wine-dark) 0%, var(--ink) 70%);
+    padding: 10rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .dlc::before {
+    content: 'SOLSTICE';
+    position: absolute;
+    top: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-display);
+    font-weight: 200;
+    font-size: 15rem;
+    color: rgba(255,255,255,0.025);
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .dlc-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+  .dlc-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--caution);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  .dlc h2 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.05;
+    color: var(--paper);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+  .dlc h2 .italic { font-style: italic; color: var(--caution); }
+  .dlc p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: var(--paper-warm);
+    margin-bottom: 2rem;
+  }
+
+  /* ━━━━━━━━━━ CTA ━━━━━━━━━━ */
+  .cta {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+  .cta-marquee {
+    overflow: hidden;
+    margin-bottom: 4rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--paper-deep);
+    border-bottom: 1px solid var(--paper-deep);
+    white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-flex;
+    gap: 3rem;
+    animation: scroll 30s linear infinite;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: 1.8rem;
+    color: var(--ink-mid);
+  }
+  .marquee-track span:nth-child(even) { color: var(--wine); font-style: normal; }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .cta h2 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    color: var(--ink);
+    line-height: 1.05;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+  .cta h2 .italic { font-style: italic; color: var(--wine); }
+  .cta p {
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    color: var(--ink-mid);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .signup {
+    display: inline-flex;
+    align-items: stretch;
+    gap: 0;
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid var(--ink);
+  }
+  .signup input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 1.1rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ink);
+    outline: none;
+    letter-spacing: 0.05em;
+  }
+  .signup input::placeholder {
+    color: var(--silver-deep);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+  }
+  .signup button {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 0 1.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .signup button:hover { background: var(--wine); }
+
+  .platforms {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--silver-deep);
+    text-transform: uppercase;
+  }
+  .platforms span { display: flex; align-items: center; gap: 0.5rem; }
+  .platforms span::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--ink);
+    border-radius: 50%;
+  }
+
+  /* ━━━━━━━━━━ FOOTER ━━━━━━━━━━ */
+  footer {
+    background: var(--ink);
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--silver-deep);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--silver-deep);
+    text-transform: uppercase;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  footer a { color: var(--silver-dim); text-decoration: none; }
+  footer a:hover { color: var(--paper); }
+  .foot-links { display: flex; gap: 1.5rem; }
+
+  /* ━━━━━━━━━━ RESPONSIVE ━━━━━━━━━━ */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hero { padding: 5rem 1.25rem 2rem; }
+    .hero-bottom { grid-template-columns: 1fr; }
+    .hero-stats { justify-content: flex-start; }
+    section { padding: 5rem 1.25rem; }
+    .premise { padding: 6rem 1.25rem; }
+    .premise-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .premise-quote { font-size: 1.5rem; }
+    .premise::before { font-size: 6rem; }
+    .orbit { grid-template-columns: 1fr; }
+    .orbit::after { display: none; }
+    .orbit-panel { padding: 4rem 1.5rem; min-height: auto; }
+    .orbit-num { font-size: 5rem; }
+    .orbit-name { font-size: 2rem; }
+    .cast-grid { grid-template-columns: 1fr; }
+    .cast-card { grid-column: 1 / -1 !important; }
+    .routes-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .telemetry { gap: 1rem; }
+    .tel-item:nth-child(n+3) { display: none; }
+    .hero-tag::before, .hero-tag::after { display: none; }
+    .marquee-track { font-size: 1.2rem; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">SLIPSTREAM</div>
+  <div class="nav-links">
+    <a href="#premise" data-num="01">PREMISE</a>
+    <a href="#cast" data-num="02">CAST</a>
+    <a href="#routes" data-num="03">ROUTES</a>
+    <a href="#season" data-num="04">SEASON</a>
+    <a href="#wishlist" data-num="05">WISHLIST</a>
+  </div>
+</nav>
+
+<!-- ━━━━━━━━━━ HERO ━━━━━━━━━━ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="speed-lines"></div>
+
+  <div class="hero-top">
+    <div class="telemetry">
+      <div class="tel-item">
+        <span class="tel-label">SESSION</span>
+        <span class="tel-value live">● LIVE</span>
+      </div>
+      <div class="tel-item">
+        <span class="tel-label">SEASON</span>
+        <span class="tel-value">S01 / 2026</span>
+      </div>
+      <div class="tel-item">
+        <span class="tel-label">STATUS</span>
+        <span class="tel-value">IN DEV</span>
+      </div>
+      <div class="tel-item">
+        <span class="tel-label">TIME CODE</span>
+        <span class="tel-value" id="timecode">00:00:00</span>
+      </div>
+    </div>
+    <div class="hero-top-right" style="font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--silver-dim); text-align: right; text-transform: uppercase;">
+      An Interactive<br>Romance Novel
+    </div>
+  </div>
+
+  <div class="hero-center">
+    <div class="hero-tag">Apex Grand Prix · Chapter Zero</div>
+    <h1 class="hero-title">SL<span class="i">I</span>PSTREAM</h1>
+    <div class="hero-subtitle">슬립스트림</div>
+  </div>
+
+  <div class="hero-bottom">
+    <p class="hero-logline">
+      모나코에서 첫 포디움을 따낸 신예 드라이버. 그를 2년간 조용히 지켜본
+      <em>한 남자의 궤도</em>로 끌려 들어간 이카로스의 시즌.
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">12</span>
+        <div class="stat-label">Chapters</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num">06</span>
+        <div class="stat-label">Routes</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num">18</span>
+        <div class="stat-label">Endings</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cue">Enter the Paddock</div>
+</section>
+
+<!-- ━━━━━━━━━━ PREMISE ━━━━━━━━━━ -->
+<section class="premise" id="premise">
+  <div class="section-num">01 · The Premise</div>
+  <div class="premise-grid">
+    <div class="premise-quote">
+      태양에 너무 가까이 날아간 소년의 이야기. <span class="em">이번에는,</span>
+      <em>다이달로스가 같이 나는 법을 배웠다.</em>
+    </div>
+    <div class="premise-body">
+      <p><strong>《슬립스트림》</strong> 은 가상의 국제 모터스포츠 시리즈 <em>Apex Grand Prix</em>를 배경으로 한 성인 인터랙티브 로맨스 소설입니다.</p>
+      <p>21세의 신예 드라이버 <em>라이브러 카스테야노스</em>는 모나코 GP에서 자신의 첫 포디움을 따내자마자, 평생 본 적 없던 한 남자의 빌라로 끌려가게 됩니다. 그곳에 있던 사람은 그가 소속된 팀을 소유한 모기업의 후계자, <em>산데르 마렝고</em>. 라이브러는 모르지만, 이 차가운 거인은 이미 2년간 그의 모든 "행운"의 진짜 출처였습니다.</p>
+      <p>레이스 한 바퀴는 평균 90초. 충돌 사고가 일어나는 데 걸리는 시간은 0.3초. 한 사람이 한 사람의 인생을 완전히 다르게 만드는 데 걸리는 시간은, 그보다 짧을 수도 있습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━ ORBIT — DUAL LEADS ━━━━━━━━━━ -->
+<section class="orbit">
+  <div class="orbit-panel river">
+    <div class="orbit-num wine">03</div>
+    <div>
+      <div class="orbit-id">DRIVER · ROOKIE</div>
+      <div class="orbit-name">River <span class="italic">Castellanos</span></div>
+      <div class="orbit-tag">"속도밖에 모르는 아이"</div>
+      <div class="orbit-stats">
+        <div class="orbit-stat"><span class="lbl">AGE</span><span class="val">21</span></div>
+        <div class="orbit-stat"><span class="lbl">TEAM</span><span class="val">Marengo</span></div>
+        <div class="orbit-stat"><span class="lbl">ORIGIN</span><span class="val">Bakersfield, CA</span></div>
+        <div class="orbit-stat"><span class="lbl">HEIGHT</span><span class="val">178 CM</span></div>
+        <div class="orbit-stat"><span class="lbl">TONGUE</span><span class="val">ES · EN</span></div>
+        <div class="orbit-stat"><span class="lbl">VICE</span><span class="val">Ducati</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="orbit-panel sander">
+    <div class="orbit-num silver">01</div>
+    <div>
+      <div class="orbit-id">PRINCIPAL · HEIR</div>
+      <div class="orbit-name">Sander <span class="italic">Marengo</span></div>
+      <div class="orbit-tag">"태양처럼 차가운 사람"</div>
+      <div class="orbit-stats">
+        <div class="orbit-stat"><span class="lbl">AGE</span><span class="val">37</span></div>
+        <div class="orbit-stat"><span class="lbl">SEAT</span><span class="val">Marengo Industries</span></div>
+        <div class="orbit-stat"><span class="lbl">ORIGIN</span><span class="val">Lake Como, IT</span></div>
+        <div class="orbit-stat"><span class="lbl">HEIGHT</span><span class="val">193 CM</span></div>
+        <div class="orbit-stat"><span class="lbl">TONGUE</span><span class="val">IT · EN · FR</span></div>
+        <div class="orbit-stat"><span class="lbl">VICE</span><span class="val">Vetiver</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━ CAST ━━━━━━━━━━ -->
+<section class="cast" id="cast">
+  <div class="section-num">02 · The Grid</div>
+  <h2 class="section-title">Six bodies, <span class="italic">one orbit.</span></h2>
+
+  <div class="cast-grid">
+    <div class="cast-card">
+      <div class="num">01</div>
+      <div class="role">Principal · Heir</div>
+      <div class="name">Sander Marengo</div>
+      <div class="name-kr">산데르 마렝고 · 37</div>
+      <p class="desc">방산·항공우주 마렝고 그룹의 단독 후계자. 빙하 같은 외면 아래, 한 사람에게만 작동하는 망가진 다이얼. 2년간 라이브러의 모든 "행운"을 조용히 설계해온 손.</p>
+      <div class="badge">Main Route · True Ending</div>
+    </div>
+
+    <div class="cast-card">
+      <div class="num">03</div>
+      <div class="role">Driver · Rookie</div>
+      <div class="name">River Castellanos</div>
+      <div class="name-kr">라이브러 카스테야노스 · 21</div>
+      <p class="desc">아르헨/캘리포니아 출신, 본능형 드라이버. 단순하고 직선적이며 자기 매력에 무지함. 어머니가 쓰던 베티버 향이 트라우마이자 닻.</p>
+      <div class="badge">Protagonist</div>
+    </div>
+
+    <div class="cast-card">
+      <div class="num">27</div>
+      <div class="role">Rival · Driver</div>
+      <div class="name">Theo Vraskov</div>
+      <div class="name-kr">테오 브라스코프 · 21</div>
+      <p class="desc">라이벌 팀 아킬레우스의 에이스. 미디어의 총아, 라이브러의 공식 안티. 15살 때부터 그의 사진을 오려둔 소년.</p>
+      <div class="badge">Rival Route</div>
+    </div>
+
+    <div class="cast-card">
+      <div class="num">—</div>
+      <div class="role">Race Engineer</div>
+      <div class="name">Kit Adesanya</div>
+      <div class="name-kr">키트 아데산야 · 30대 중반</div>
+      <p class="desc">라이브러의 레이스 엔지니어. 모든 걸 알지만 아무 말 하지 않는 사람. 라이브러와 산데르 사이에서 유일한 통역.</p>
+      <div class="badge">Locked Route · NG+ Unlock</div>
+    </div>
+
+    <div class="cast-card">
+      <div class="num">14</div>
+      <div class="role">F1 Academy</div>
+      <div class="name">Naia Pattison-Reeve</div>
+      <div class="name-kr">나이아 패티슨-리브</div>
+      <p class="desc">패티슨-리브 항공우주 가문의 상속녀이자 신예. 테오의 전 약혼자. 솔스티스 갈라에서 진실을 흘리는 인물.</p>
+      <div class="badge">Friend Route</div>
+    </div>
+
+    <div class="cast-card">
+      <div class="num">??</div>
+      <div class="role">Ghost · Ex-Coach</div>
+      <div class="name">Lev Sokolov</div>
+      <div class="name-kr">레브 소콜로프</div>
+      <p class="desc">라이브러의 전 F2 코치이자, 본인도 이름 붙이지 못한 첫 비밀 관계. 시즌 중반 인터뷰로 다시 돌아옴. 잠긴 다크 루트의 열쇠.</p>
+      <div class="badge">Dark Route · Locked</div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━ ROUTES ━━━━━━━━━━ -->
+<section class="routes" id="routes">
+  <div class="section-num">03 · Routes</div>
+  <h2 class="section-title">Six ways <span class="italic">to cross the line.</span></h2>
+  <p class="routes-intro">
+    초기 챕터의 선택이 누구의 후류(slipstream)에 들어갈지를 결정합니다. 각 루트마다 굿/배드/시크릿 엔딩이 갈라지며, 모두 합쳐 <strong>18개의 결말</strong>이 준비되어 있습니다.
+  </p>
+
+  <div class="routes-grid">
+    <div class="route-card">
+      <div class="num">Route 01 · True</div>
+      <div class="for">For Sander</div>
+      <div class="name">The Orbit</div>
+      <div class="trope">— The Glacial Patron</div>
+      <p class="desc">차가운 거인이 자기 인생에서 처음으로 무언가를 잃을까봐 두려워하는 법을 배우는 이야기. 슬로우번, 헌신, 두 사람이 같이 짓는 가족.</p>
+    </div>
+
+    <div class="route-card">
+      <div class="num">Route 02 · Rival</div>
+      <div class="for">For Theo</div>
+      <div class="name">Pole Position</div>
+      <div class="trope">— Rivals to Lovers</div>
+      <p class="desc">7년간 미워해온 이유를 같이 풀어내는 시즌. 실버스톤에서 분기. 적의의 정체를 깨닫는 순간, 모든 레이스가 다르게 보이기 시작한다.</p>
+    </div>
+
+    <div class="route-card">
+      <div class="num">Route 03 · Forbidden</div>
+      <div class="for">For Kit</div>
+      <div class="name">Pit Wall</div>
+      <div class="trope">— Mentor / Slow Burn</div>
+      <p class="desc">한 회차 클리어 후 해금. 매 레이스마다 옆에 있던 사람을 다시 보게 되는 이야기. 둘 다 자기 직업을 걸어야 한다.<span class="lock">NG+ Required</span></p>
+    </div>
+
+    <div class="route-card">
+      <div class="num">Route 04 · Friend</div>
+      <div class="for">For Naia</div>
+      <div class="name">Lap Counter</div>
+      <div class="trope">— Found Family</div>
+      <p class="desc">로맨스 무게보다 정체성·우정·재발견에 집중한 루트. 두 신예 드라이버가 각자의 챔피언십을 끌고 가는 한 시즌.</p>
+    </div>
+
+    <div class="route-card">
+      <div class="num">Route 05 · Dark</div>
+      <div class="for">For Lev</div>
+      <div class="name">Yellow Flag</div>
+      <div class="trope">— Toxic / Bittersweet</div>
+      <p class="desc">전 코치의 그림자에서 끝내 빠져나오지 못하는 루트. 베스트 엔딩도 비터스위트. 캐릭터의 가장 어두운 자리를 거치는 이야기.<span class="lock">Locked</span></p>
+    </div>
+
+    <div class="route-card">
+      <div class="num">Route 06 · Solo</div>
+      <div class="for">For No One</div>
+      <div class="name">Apex</div>
+      <div class="trope">— The Solo Crown</div>
+      <p class="desc">모든 손길을 거절하고 오직 챔피언십만 향해 달리는 길. 영광스러운 외로움. 가장 짧고, 가장 빠른 시즌.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━ SEASON CALENDAR ━━━━━━━━━━ -->
+<section class="season" id="season">
+  <div class="container">
+    <div class="section-num">04 · The Season</div>
+    <h2 class="section-title">Twelve circuits. <span class="italic">One slow collision.</span></h2>
+  </div>
+
+  <div class="season-scroll">
+    <div class="season-track">
+      <div class="gp milestone">
+        <div class="ch">CH 01 · MAR</div>
+        <div class="where">Monaco <span class="italic">GP</span></div>
+        <div class="beat">첫 포디움. 모든 게 시작된 자리.</div>
+      </div>
+      <div class="gp">
+        <div class="ch">CH 02 · APR</div>
+        <div class="where">Imola <span class="italic">GP</span></div>
+        <div class="beat">첫 사인회. 테오의 공개 비방 개시.</div>
+      </div>
+      <div class="gp">
+        <div class="ch">CH 03 · MAY</div>
+        <div class="where">Barcelona <span class="italic">GP</span></div>
+        <div class="beat">산데르가 처음 카메라에 잡힘. 가십지 폭발.</div>
+      </div>
+      <div class="gp milestone">
+        <div class="ch">CH 04 · JUN</div>
+        <div class="where">Silverstone <span class="italic">GP</span></div>
+        <div class="beat">머신 결함, 거의 충돌. 산데르의 첫 두려움.</div>
+      </div>
+      <div class="gp milestone">
+        <div class="ch">CH 05 · JUL</div>
+        <div class="where">Lake Como <span class="italic">— interlude</span></div>
+        <div class="beat">여름 휴지기. 2년간의 진실. 첫 밤.</div>
+      </div>
+      <div class="gp">
+        <div class="ch">CH 06 · AUG</div>
+        <div class="where">Spa <span class="italic">GP</span></div>
+        <div class="beat">파파라치 컷. 산데르가 숨기지 않는다.</div>
+      </div>
+      <div class="gp milestone">
+        <div class="ch">CH 07 · SEP</div>
+        <div class="where">Monza <span class="italic">GP</span></div>
+        <div class="beat">테오의 패독 컨프론테이션. 바이럴.</div>
+      </div>
+      <div class="gp">
+        <div class="ch">CH 08 · SEP</div>
+        <div class="where">Singapore <span class="italic">GP</span></div>
+        <div class="beat">레브 소콜로프의 인터뷰. "내가 만든 선수."</div>
+      </div>
+      <div class="gp">
+        <div class="ch">CH 09 · OCT</div>
+        <div class="where">Suzuka <span class="italic">GP</span></div>
+        <div class="beat">마렝고 인더스트리 적대적 인수합병.</div>
+      </div>
+      <div class="gp">
+        <div class="ch">CH 10 · NOV</div>
+        <div class="where">Las Vegas <span class="italic">GP</span></div>
+        <div class="beat">산데르의 결정 — 정치적 결혼 거절.</div>
+      </div>
+      <div class="gp milestone">
+        <div class="ch">CH 11 · DEC</div>
+        <div class="where">Aspen <span class="italic">— Solstice Gala</span></div>
+        <div class="beat">테오의 고백. 눈 덮인 온실.</div>
+      </div>
+      <div class="gp milestone">
+        <div class="ch">CH 12 · DEC</div>
+        <div class="where">Abu Dhabi <span class="italic">GP</span></div>
+        <div class="beat">시즌 최종전. 시상대에서의 첫 키스.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━ FEATURES ━━━━━━━━━━ -->
+<section class="features">
+  <div class="section-num">05 · Mechanics & Mysteries</div>
+  <h2 class="section-title">The hooks <span class="italic">beneath the surface.</span></h2>
+
+  <div class="features-grid">
+    <div class="feature">
+      <div class="num">F · 01</div>
+      <h3>The Slipstream <span class="italic">Mechanic.</span></h3>
+      <p>초반 챕터의 선택이 누구의 후류에 들어갈지를 결정합니다. 화면 한쪽에 떠 있는 빛의 궤적이, 어떤 차의 뒤에 당신이 서 있는지를 보여줍니다.</p>
+    </div>
+
+    <div class="feature">
+      <div class="num">F · 02</div>
+      <h3>The <span class="italic">Vetiver</span> Mystery.</h3>
+      <p>라이브러의 어머니가 쓰던 향. 산데르와 연결된 모든 장소에서 같은 베티버 노트가 등장합니다. 진실은 시즌 절반쯤 도달했을 때.</p>
+    </div>
+
+    <div class="feature">
+      <div class="num">F · 03</div>
+      <h3>POV Color <span class="italic">Grading.</span></h3>
+      <p>라이브러 시점은 호박색, 산데르 시점은 회은색, 테오 시점은 코발트. 한눈에 누구의 눈으로 보고 있는지 알 수 있는 시각 신호.</p>
+    </div>
+
+    <div class="feature">
+      <div class="num">F · 04</div>
+      <h3>The Race Day <span class="italic">QTE.</span></h3>
+      <p>각 GP마다 리듬형 미니게임. 본 플롯에는 영향을 주지 않지만, 미디어 호감도 게이지를 통해 스폰서십 대화 옵션이 잠금/해금됩니다.</p>
+    </div>
+
+    <div class="feature">
+      <div class="num">F · 05</div>
+      <h3>Hidden <span class="italic">Collectibles.</span></h3>
+      <p>산데르의 서재 / 테오의 사진첩 / 키트의 무전 로그. 모두 모으면 각 캐릭터의 잠긴 비밀 챕터가 해금됩니다.</p>
+    </div>
+
+    <div class="feature">
+      <div class="num">F · 06</div>
+      <h3>The <span class="italic">Diary.</span></h3>
+      <p>매 GP 후 라이브러의 일기. 회차마다 다른 선택의 결과를 비교할 수 있는 추적 도구이자, 그가 자신을 알아가는 가장 솔직한 자리.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━ DLC TEASER ━━━━━━━━━━ -->
+<section class="dlc">
+  <div class="dlc-content">
+    <div class="dlc-label">— DLC · December 2026 —</div>
+    <h2>The <span class="italic">Solstice Gala.</span></h2>
+    <p>"가장 긴 밤. 가장 깊은 눈. 그리고 한 번도 말해본 적 없는 문장."</p>
+    <p style="font-family: var(--font-mono); font-style: normal; font-size: 0.75rem; letter-spacing: 0.25em; color: var(--silver); text-transform: uppercase;">애스펀 · 12월 21일 · 모든 루트에서 다른 결말</p>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━ CTA / WISHLIST ━━━━━━━━━━ -->
+<section class="cta" id="wishlist">
+  <div class="cta-marquee">
+    <div class="marquee-track">
+      <span>JOIN THE GRID</span><span>그리드에 자리를 예약하세요</span>
+      <span>JOIN THE GRID</span><span>그리드에 자리를 예약하세요</span>
+      <span>JOIN THE GRID</span><span>그리드에 자리를 예약하세요</span>
+      <span>JOIN THE GRID</span><span>그리드에 자리를 예약하세요</span>
+    </div>
+  </div>
+
+  <h2>The lights are about <span class="italic">to go out.</span></h2>
+  <p>출시 정보, 베타 테스트 초대, 콘셉트 아트, 캐릭터 트랙 청취 — 가장 먼저 전달받으세요.</p>
+
+  <form class="signup" onsubmit="event.preventDefault(); this.querySelector('button').textContent='✓ ON THE GRID';">
+    <input type="email" placeholder="YOUR EMAIL · 이메일 주소" required>
+    <button type="submit">Reserve Grid Slot →</button>
+  </form>
+
+  <div class="platforms">
+    <span>PC / Steam</span>
+    <span>Mac</span>
+    <span>iOS / Android</span>
+    <span>Nintendo Switch</span>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━ FOOTER ━━━━━━━━━━ -->
+<footer>
+  <div>© 2026 SLIPSTREAM · A Concept by [Studio]</div>
+  <div class="foot-links">
+    <a href="#">Press Kit</a>
+    <a href="#">Discord</a>
+    <a href="#">X / Twitter</a>
+    <a href="#">Instagram</a>
+    <a href="#">Privacy</a>
+  </div>
+  <div>v 0.0.3 · build 2026.05</div>
+</footer>
+
+<script>
+  // Live timecode in hero
+  function updateTimecode() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const el = document.getElementById('timecode');
+    if (el) el.textContent = `${h}:${m}:${s}`;
+  }
+  updateTimecode();
+  setInterval(updateTimecode, 1000);
+
+  // Subtle reveal on scroll
+  const reveal = (els) => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1)';
+      io.observe(el);
+    });
+  };
+  reveal(document.querySelectorAll('.section-title, .cast-card, .route-card, .feature, .premise-quote, .premise-body, .gp'));
+</script>
+
+</body>
+</html>

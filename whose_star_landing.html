@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>누구의 별인가? — Whose Star?</title>
+<meta name="description" content="다크 판타지 BL 비주얼 노벨. 다섯 갈래의 별. 단 하룻밤의 기억. 가슴에 새겨진 별자리가 누구의 것인지를 가려내는 게임.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #0a0612;
+    --ink-2: #14091c;
+    --void: #050308;
+    --blood: #8b0a1a;
+    --blood-deep: #4a050d;
+    --blood-soft: #c0334a;
+    --gold: #c9a961;
+    --gold-bright: #e6c47d;
+    --gold-dim: #8a7240;
+    --parchment: #e8e0d0;
+    --parchment-dim: #a89e88;
+    --ember: #b85c5c;
+    --purple-glow: #6b4d8a;
+    --star: #f4ecd8;
+    --display-en: 'Italiana', serif;
+    --serif-en: 'Cormorant Garamond', serif;
+    --body-en: 'EB Garamond', serif;
+    --display-ko: 'Nanum Myeongjo', serif;
+    --body-ko: 'Gowun Batang', serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--parchment);
+    font-family: var(--body-ko), var(--body-en);
+    line-height: 1.6;
+    overflow-x: hidden;
+    font-weight: 400;
+  }
+
+  /* ============ STARFIELD ============ */
+  .starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(107, 77, 138, 0.18), transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(139, 10, 26, 0.20), transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(20, 9, 28, 0.5), var(--void) 70%);
+  }
+
+  .starfield::before, .starfield::after {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background-image:
+      radial-gradient(1px 1px at 12% 8%, var(--star), transparent),
+      radial-gradient(1px 1px at 28% 22%, var(--star), transparent),
+      radial-gradient(1px 1px at 45% 12%, var(--gold-bright), transparent),
+      radial-gradient(1px 1px at 67% 5%, var(--star), transparent),
+      radial-gradient(1.5px 1.5px at 82% 28%, var(--star), transparent),
+      radial-gradient(1px 1px at 91% 47%, var(--star), transparent),
+      radial-gradient(1px 1px at 7% 55%, var(--gold-bright), transparent),
+      radial-gradient(1px 1px at 22% 72%, var(--star), transparent),
+      radial-gradient(1.5px 1.5px at 38% 88%, var(--star), transparent),
+      radial-gradient(1px 1px at 56% 67%, var(--gold-bright), transparent),
+      radial-gradient(1px 1px at 73% 82%, var(--star), transparent),
+      radial-gradient(1px 1px at 88% 95%, var(--star), transparent),
+      radial-gradient(1px 1px at 33% 42%, var(--star), transparent),
+      radial-gradient(1px 1px at 62% 38%, var(--star), transparent);
+    background-size: 800px 800px;
+    background-repeat: repeat;
+    animation: drift 240s linear infinite;
+    opacity: 0.7;
+  }
+
+  .starfield::after {
+    background-size: 1200px 1200px;
+    animation-duration: 360s;
+    animation-direction: reverse;
+    opacity: 0.4;
+  }
+
+  @keyframes drift {
+    from { transform: translate(0, 0); }
+    to { transform: translate(-800px, 400px); }
+  }
+
+  /* ============ TWINKLES ============ */
+  .twinkle {
+    position: fixed;
+    width: 3px; height: 3px;
+    background: var(--gold-bright);
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+    box-shadow: 0 0 8px var(--gold-bright), 0 0 16px var(--gold);
+    animation: twinkle 4s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.4rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(5,3,8,0.9), transparent);
+    backdrop-filter: blur(4px);
+  }
+  .logo {
+    font-family: var(--display-en);
+    font-size: 1.5rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .logo::before {
+    content: '✧';
+    margin-right: 0.6rem;
+    color: var(--blood-soft);
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--parchment-dim);
+    text-decoration: none;
+    font-family: var(--body-ko);
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    transition: color 0.3s, letter-spacing 0.3s;
+    text-transform: uppercase;
+  }
+  .nav-links a:hover {
+    color: var(--gold-bright);
+    letter-spacing: 0.3em;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    padding: 8rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .hero-ornament-top, .hero-ornament-bot {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--gold);
+    opacity: 0.5;
+  }
+  .hero-ornament-top { top: 6rem; }
+  .hero-ornament-bot { bottom: 2rem; }
+
+  .hero-eyebrow {
+    font-family: var(--display-en);
+    font-size: 0.9rem;
+    letter-spacing: 0.7em;
+    color: var(--blood-soft);
+    margin-bottom: 3rem;
+    padding-left: 0.7em;
+    animation: fadeUp 1.4s ease 0.2s both;
+  }
+
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '—';
+    margin: 0 1.5rem;
+    color: var(--gold-dim);
+  }
+
+  .hero-title {
+    font-family: var(--display-en);
+    font-size: clamp(4.5rem, 14vw, 11.5rem);
+    line-height: 0.88;
+    color: var(--parchment);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+    animation: fadeUp 1.6s ease 0.4s both;
+    position: relative;
+  }
+  .hero-title span:nth-child(2) {
+    color: var(--blood-soft);
+    font-style: italic;
+    font-family: var(--serif-en);
+    font-weight: 300;
+    display: inline-block;
+    transform: translateY(-0.05em);
+  }
+
+  .hero-title-glow {
+    position: absolute;
+    inset: 0;
+    color: var(--gold);
+    filter: blur(40px);
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .hero-ko {
+    font-family: var(--display-ko);
+    font-weight: 400;
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    letter-spacing: 1.2em;
+    padding-left: 1.2em;
+    color: var(--gold-bright);
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+    animation: fadeUp 1.4s ease 0.7s both;
+  }
+
+  .hero-tagline {
+    font-family: var(--body-ko);
+    color: var(--parchment-dim);
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    max-width: 32em;
+    margin: 0 auto 3rem;
+    line-height: 2;
+    animation: fadeUp 1.4s ease 0.9s both;
+  }
+  .hero-tagline em {
+    color: var(--gold-bright);
+    font-style: normal;
+  }
+
+  .hero-meta {
+    font-family: var(--display-en);
+    font-size: 0.8rem;
+    letter-spacing: 0.5em;
+    color: var(--parchment-dim);
+    animation: fadeUp 1.4s ease 1.1s both;
+  }
+  .hero-meta span { color: var(--blood-soft); margin: 0 1rem; }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--gold-dim);
+    font-family: var(--display-en);
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    animation: fadeUp 2s ease 1.6s both, bobbing 2.5s ease-in-out infinite 1.6s;
+  }
+  .scroll-cue::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 50px;
+    margin: 0.8rem auto 0;
+    background: linear-gradient(to bottom, var(--gold-dim), transparent);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bobbing {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(10px); }
+  }
+
+  /* Cassiopeia constellation in hero */
+  .hero-constellation {
+    position: absolute;
+    top: 20%;
+    left: 8%;
+    width: 180px;
+    opacity: 0.6;
+    animation: pulse-glow 6s ease-in-out infinite;
+  }
+  .hero-constellation-2 {
+    position: absolute;
+    bottom: 20%;
+    right: 8%;
+    width: 140px;
+    opacity: 0.5;
+    animation: pulse-glow 8s ease-in-out infinite 2s;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.4; filter: drop-shadow(0 0 10px var(--gold)); }
+    50% { opacity: 0.8; filter: drop-shadow(0 0 30px var(--gold-bright)); }
+  }
+
+  /* ============ SECTION BASE ============ */
+  section {
+    position: relative;
+    z-index: 2;
+    padding: 8rem 2rem;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: var(--display-en);
+    letter-spacing: 0.6em;
+    color: var(--blood-soft);
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .section-label::before, .section-label::after {
+    content: '✦';
+    margin: 0 1.5rem;
+    color: var(--gold);
+  }
+
+  .section-title {
+    font-family: var(--display-ko);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    color: var(--parchment);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+  }
+  .section-title em {
+    color: var(--blood-soft);
+    font-family: var(--serif-en);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .section-subtitle {
+    font-family: var(--serif-en);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--parchment-dim);
+    text-align: center;
+    letter-spacing: 0.15em;
+    max-width: 40em;
+    margin: 0 auto 5rem;
+  }
+
+  /* ============ QUESTION SECTION ============ */
+  .question {
+    text-align: center;
+    padding: 10rem 2rem 8rem;
+    background:
+      radial-gradient(ellipse at center, rgba(139,10,26,0.08), transparent 60%);
+  }
+
+  .question-mark {
+    font-family: var(--display-en);
+    font-size: 12rem;
+    color: var(--blood-deep);
+    line-height: 1;
+    opacity: 0.4;
+    font-style: italic;
+    margin-bottom: -2rem;
+  }
+
+  .question-text {
+    font-family: var(--display-ko);
+    font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1.5;
+    color: var(--parchment);
+    margin: 2rem auto;
+    max-width: 18em;
+  }
+  .question-text .crimson {
+    color: var(--blood-soft);
+  }
+  .question-text .gilded {
+    color: var(--gold-bright);
+    font-family: var(--serif-en);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .question-body {
+    font-family: var(--body-ko);
+    color: var(--parchment-dim);
+    font-size: 1.05rem;
+    line-height: 2;
+    max-width: 36em;
+    margin: 3rem auto;
+    letter-spacing: 0.04em;
+  }
+  .question-body::first-letter {
+    font-family: var(--display-en);
+    font-size: 4rem;
+    color: var(--gold-bright);
+    float: left;
+    line-height: 0.9;
+    padding-right: 0.5rem;
+    padding-top: 0.3rem;
+    font-style: italic;
+  }
+
+  /* ============ WORLD / SYSTEM ============ */
+  .world {
+    background: linear-gradient(180deg, transparent, rgba(20,9,28,0.6), transparent);
+  }
+
+  .system-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    margin-top: 4rem;
+  }
+
+  .system-visual {
+    position: relative;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+  }
+
+  .system-visual svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 30px var(--gold));
+  }
+
+  .system-text h3 {
+    font-family: var(--display-ko);
+    font-weight: 400;
+    font-size: 2rem;
+    color: var(--gold-bright);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+  .system-text h3 .latin {
+    font-family: var(--serif-en);
+    font-style: italic;
+    color: var(--parchment-dim);
+    font-size: 1.2rem;
+    margin-left: 1rem;
+    font-weight: 300;
+  }
+  .system-text p {
+    font-family: var(--body-ko);
+    color: var(--parchment-dim);
+    margin-bottom: 1.5rem;
+    line-height: 2;
+    font-size: 1rem;
+  }
+  .system-text .gilt {
+    color: var(--gold-bright);
+    font-family: var(--display-ko);
+    font-weight: 700;
+  }
+  .system-text .blood {
+    color: var(--blood-soft);
+    font-style: italic;
+  }
+
+  /* ============ CHARACTERS / FIVE STARS ============ */
+  .characters {
+    padding: 10rem 2rem;
+  }
+
+  .characters .container {
+    max-width: 1400px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    margin-top: 5rem;
+    perspective: 1500px;
+  }
+
+  .char-card {
+    aspect-ratio: 3 / 5;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+  }
+
+  .char-card.flipped {
+    transform: rotateY(180deg);
+  }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 4px;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .card-front {
+    background:
+      linear-gradient(160deg, rgba(201,169,97,0.06), transparent 50%),
+      radial-gradient(ellipse at top, rgba(139,10,26,0.18), transparent 60%),
+      linear-gradient(180deg, var(--ink-2), var(--ink));
+    border: 1px solid var(--gold-dim);
+    box-shadow:
+      inset 0 0 60px rgba(0,0,0,0.6),
+      0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .card-front::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--gold-dim);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .card-back {
+    transform: rotateY(180deg);
+    background:
+      linear-gradient(180deg, var(--ink), var(--blood-deep));
+    border: 1px solid var(--blood-soft);
+    color: var(--parchment);
+  }
+  .card-back::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--gold-dim);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .card-roman {
+    font-family: var(--display-en);
+    font-size: 0.95rem;
+    letter-spacing: 0.4em;
+    color: var(--blood-soft);
+    text-align: center;
+    margin-bottom: 0.4rem;
+  }
+
+  .card-arch {
+    text-align: center;
+    font-family: var(--display-en);
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: var(--gold-dim);
+    margin-bottom: 1.5rem;
+  }
+
+  .card-constellation {
+    margin: 0.5rem auto 1rem;
+    width: 75%;
+    aspect-ratio: 2/1.4;
+    filter: drop-shadow(0 0 12px var(--gold));
+  }
+
+  .card-name {
+    font-family: var(--display-ko);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--parchment);
+    text-align: center;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  .card-name-en {
+    font-family: var(--serif-en);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--gold-bright);
+    text-align: center;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-role {
+    font-family: var(--body-ko);
+    color: var(--parchment-dim);
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    letter-spacing: 0.1em;
+    margin-top: auto;
+  }
+  .card-role .sep {
+    color: var(--blood-soft);
+    margin: 0 0.5rem;
+  }
+
+  .card-route-tag {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--display-en);
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    border: 1px solid var(--gold-dim);
+    padding: 0.4rem 1rem;
+    background: rgba(0,0,0,0.4);
+  }
+
+  .card-flip-hint {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: var(--display-en);
+    font-size: 0.6rem;
+    color: var(--gold-dim);
+    letter-spacing: 0.2em;
+  }
+
+  /* card back */
+  .card-back .card-quote {
+    font-family: var(--serif-en);
+    font-style: italic;
+    color: var(--gold-bright);
+    text-align: center;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 1.5rem 0;
+    padding: 0 0.5rem;
+  }
+  .card-back .card-quote-ko {
+    font-family: var(--display-ko);
+    color: var(--parchment);
+    font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    letter-spacing: 0.02em;
+  }
+  .card-back .card-quote-ko::before,
+  .card-back .card-quote-ko::after {
+    content: '"';
+    color: var(--blood-soft);
+    font-size: 1.5rem;
+    font-family: var(--serif-en);
+  }
+  .card-back .card-desc {
+    font-family: var(--body-ko);
+    color: var(--parchment-dim);
+    font-size: 0.85rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+  .card-back .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: auto;
+  }
+  .card-back .card-tag {
+    font-family: var(--display-en);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold-bright);
+    text-transform: uppercase;
+  }
+  .card-back .card-warn {
+    background: var(--blood);
+    color: var(--star);
+    border-color: var(--blood-soft);
+  }
+
+  /* ============ MYSTERY ============ */
+  .mystery {
+    padding: 10rem 2rem;
+    background:
+      radial-gradient(ellipse at center, rgba(139,10,26,0.14), transparent 70%);
+  }
+
+  .mystery-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .glass-shard {
+    margin: 4rem auto;
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
+
+  .mystery-quote {
+    font-family: var(--display-ko);
+    font-weight: 400;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    color: var(--parchment);
+    line-height: 1.7;
+    margin: 3rem auto;
+    max-width: 24em;
+    position: relative;
+    padding: 2rem 1rem;
+  }
+  .mystery-quote::before, .mystery-quote::after {
+    font-family: var(--serif-en);
+    color: var(--blood-soft);
+    font-size: 4rem;
+    line-height: 0;
+    position: absolute;
+  }
+  .mystery-quote::before {
+    content: '"';
+    top: 1rem;
+    left: 0;
+  }
+  .mystery-quote::after {
+    content: '"';
+    bottom: -1rem;
+    right: 0;
+  }
+  .mystery-quote em {
+    color: var(--blood-soft);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .mystery-meta {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 4rem;
+    font-family: var(--display-en);
+    letter-spacing: 0.3em;
+    color: var(--gold-dim);
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .mystery-meta div { text-align: center; }
+  .mystery-meta strong {
+    display: block;
+    color: var(--blood-soft);
+    font-size: 2rem;
+    font-family: var(--display-en);
+    font-weight: 400;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============ FEATURES ============ */
+  .features {
+    padding: 8rem 2rem;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2.5rem;
+    margin-top: 5rem;
+  }
+
+  .feature {
+    padding: 2.5rem 2rem;
+    background: linear-gradient(160deg, rgba(20,9,28,0.6), rgba(5,3,8,0.6));
+    border: 1px solid rgba(201,169,97,0.2);
+    position: relative;
+    transition: border-color 0.4s, transform 0.4s;
+  }
+
+  .feature::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 30px; height: 30px;
+    border-top: 1px solid var(--gold);
+    border-left: 1px solid var(--gold);
+  }
+  .feature::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 30px; height: 30px;
+    border-bottom: 1px solid var(--gold);
+    border-right: 1px solid var(--gold);
+  }
+
+  .feature:hover {
+    border-color: rgba(201,169,97,0.5);
+    transform: translateY(-4px);
+  }
+
+  .feature-icon {
+    font-family: var(--display-en);
+    font-size: 2.5rem;
+    color: var(--blood-soft);
+    font-style: italic;
+    margin-bottom: 1rem;
+  }
+
+  .feature h4 {
+    font-family: var(--display-ko);
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--gold-bright);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.03em;
+  }
+  .feature p {
+    font-family: var(--body-ko);
+    color: var(--parchment-dim);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  /* ============ CTA ============ */
+  .cta {
+    text-align: center;
+    padding: 10rem 2rem;
+    background:
+      radial-gradient(ellipse at center, rgba(201,169,97,0.08), transparent 60%);
+  }
+
+  .cta-eyebrow {
+    font-family: var(--display-en);
+    letter-spacing: 0.6em;
+    color: var(--blood-soft);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+  .cta-eyebrow::before, .cta-eyebrow::after {
+    content: '✧';
+    margin: 0 1.5rem;
+    color: var(--gold);
+  }
+
+  .cta-title {
+    font-family: var(--display-en);
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 0.95;
+    color: var(--parchment);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .cta-title em {
+    color: var(--blood-soft);
+    font-family: var(--serif-en);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .cta-ko {
+    font-family: var(--display-ko);
+    font-size: 1.4rem;
+    color: var(--gold-bright);
+    letter-spacing: 0.5em;
+    padding-left: 0.5em;
+    margin-bottom: 3rem;
+  }
+
+  .cta-body {
+    font-family: var(--body-ko);
+    color: var(--parchment-dim);
+    font-size: 1.05rem;
+    line-height: 1.9;
+    max-width: 28em;
+    margin: 0 auto 3rem;
+  }
+
+  .signup-form {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .signup-form input {
+    flex: 1;
+    min-width: 220px;
+    background: transparent;
+    border: 1px solid var(--gold-dim);
+    color: var(--parchment);
+    padding: 1rem 1.4rem;
+    font-family: var(--serif-en);
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .signup-form input::placeholder {
+    color: var(--parchment-dim);
+    font-style: italic;
+  }
+  .signup-form input:focus {
+    border-color: var(--gold-bright);
+  }
+
+  .signup-form button {
+    background: transparent;
+    color: var(--gold-bright);
+    border: 1px solid var(--gold);
+    padding: 1rem 2.4rem;
+    font-family: var(--display-en);
+    letter-spacing: 0.4em;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, letter-spacing 0.3s;
+    text-transform: uppercase;
+  }
+  .signup-form button:hover {
+    background: var(--blood);
+    color: var(--star);
+    border-color: var(--blood);
+    letter-spacing: 0.5em;
+  }
+
+  .release-date {
+    font-family: var(--display-en);
+    letter-spacing: 0.4em;
+    color: var(--gold-dim);
+    margin-top: 4rem;
+    font-size: 0.85rem;
+  }
+  .release-date strong {
+    color: var(--blood-soft);
+    font-weight: 400;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 4rem 2rem 2rem;
+    border-top: 1px solid rgba(201,169,97,0.15);
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+  footer .ornament {
+    color: var(--gold);
+    opacity: 0.4;
+    margin-bottom: 2rem;
+  }
+  footer p {
+    font-family: var(--body-ko);
+    color: var(--parchment-dim);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    margin: 0.5rem 0;
+  }
+  footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  footer .footer-links a {
+    color: var(--parchment-dim);
+    text-decoration: none;
+    font-family: var(--display-en);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  footer .footer-links a:hover {
+    color: var(--gold-bright);
+  }
+
+  /* ============ REVEAL ============ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 880px) {
+    nav { padding: 1rem 1.2rem; }
+    .nav-links { gap: 1.2rem; }
+    .nav-links a { font-size: 0.7rem; letter-spacing: 0.15em; }
+    .logo { font-size: 1.1rem; letter-spacing: 0.25em; }
+    .hero-ko { letter-spacing: 0.8em; padding-left: 0.8em; }
+    .hero-constellation, .hero-constellation-2 { display: none; }
+    section { padding: 5rem 1.2rem; }
+    .system-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .mystery-meta { gap: 1.5rem; }
+    .signup-form { flex-direction: column; }
+    .signup-form input { width: 100%; }
+    .signup-form button { width: 100%; }
+  }
+  @media (max-width: 560px) {
+    .nav-links { display: none; }
+    .hero { padding: 6rem 1rem 3rem; }
+    .question-mark { font-size: 7rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="starfield"></div>
+
+<nav>
+  <div class="logo">WHOSE STAR</div>
+  <ul class="nav-links">
+    <li><a href="#question">서문</a></li>
+    <li><a href="#world">설정</a></li>
+    <li><a href="#characters">캐릭터</a></li>
+    <li><a href="#mystery">사건</a></li>
+    <li><a href="#cta">베타 신청</a></li>
+  </ul>
+</nav>
+
+<!-- =========== HERO =========== -->
+<section class="hero">
+
+  <!-- Cassiopeia floating top-left -->
+  <svg class="hero-constellation" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="rgba(201,169,97,0.5)" stroke-width="0.6" fill="none">
+      <line x1="20" y1="100" x2="60" y2="40"/>
+      <line x1="60" y1="40" x2="100" y2="80"/>
+      <line x1="100" y1="80" x2="140" y2="30"/>
+      <line x1="140" y1="30" x2="180" y2="90"/>
+    </g>
+    <g fill="#e6c47d">
+      <circle cx="20" cy="100" r="2.5"/>
+      <circle cx="60" cy="40" r="3"/>
+      <circle cx="100" cy="80" r="2.5"/>
+      <circle cx="140" cy="30" r="3.5"/>
+      <circle cx="180" cy="90" r="2.5"/>
+    </g>
+    <text x="100" y="130" text-anchor="middle" fill="#8a7240" font-family="Italiana" font-size="9" letter-spacing="3">CASSIOPEIA</text>
+  </svg>
+
+  <!-- Corona Borealis floating bottom-right -->
+  <svg class="hero-constellation-2" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="rgba(201,169,97,0.4)" stroke-width="0.6" fill="none">
+      <path d="M 20 100 Q 40 30, 100 30 Q 160 30, 180 100" />
+    </g>
+    <g fill="#e6c47d">
+      <circle cx="20" cy="100" r="2"/>
+      <circle cx="45" cy="55" r="2.5"/>
+      <circle cx="80" cy="32" r="2"/>
+      <circle cx="120" cy="32" r="2.5"/>
+      <circle cx="155" cy="55" r="2"/>
+      <circle cx="180" cy="100" r="2"/>
+    </g>
+    <text x="100" y="130" text-anchor="middle" fill="#8a7240" font-family="Italiana" font-size="9" letter-spacing="2">CORONA BOREALIS</text>
+  </svg>
+
+  <div class="hero-ornament-top">
+    <svg width="180" height="20" viewBox="0 0 180 20">
+      <line x1="0" y1="10" x2="65" y2="10" stroke="currentColor" stroke-width="0.5"/>
+      <text x="90" y="14" text-anchor="middle" fill="currentColor" font-size="14">✦</text>
+      <line x1="115" y1="10" x2="180" y2="10" stroke="currentColor" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">A DARK FANTASY ROMANCE</div>
+    <h1 class="hero-title">
+      <span>Whose</span>
+      <br>
+      <span>Star?</span>
+    </h1>
+    <p class="hero-ko">누 구 의 별 인 가</p>
+    <p class="hero-tagline">
+      단 하룻밤의 기억. 가슴에 새겨진 <em>별자리</em>.<br>
+      다섯 갈래의 사랑. 한 명의 살인자.
+    </p>
+    <p class="hero-meta">2026 SPRING <span>·</span> VISUAL NOVEL <span>·</span> BL ROMANCE</p>
+  </div>
+
+  <div class="hero-ornament-bot">
+    <svg width="40" height="40" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="2" fill="currentColor"/>
+      <circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="0.4"/>
+      <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2 2"/>
+    </svg>
+  </div>
+
+  <div class="scroll-cue">SCROLL</div>
+</section>
+
+<!-- =========== THE QUESTION =========== -->
+<section id="question" class="question">
+  <div class="container">
+    <p class="reveal section-label">PROLOGUE</p>
+    <div class="reveal question-mark">?</div>
+    <h2 class="reveal question-text">
+      누가 내 가슴에 <span class="crimson">이 별</span>을 새겼나.<br>
+      <span class="gilded">— and why I can&apos;t remember.</span>
+    </h2>
+    <p class="reveal question-body">
+      그날 밤 진홍 무도회에서 무슨 일이 있었는지 시안은 기억하지 못한다. 다만 다음 날 아침, 가슴 한가운데에 황가만이 새길 수 있는 별자리가 빛나고 있었고, 넉 달이 지나 의무대 친구는 떨리는 손으로 진단서를 내밀었다. — 시안은 황가의 아이를 잉태했다. 그러나 그 아이의 아버지가 누구인지, 그 별을 새긴 자가 누구인지, 그는 아직 알지 못한다.
+    </p>
+  </div>
+</section>
+
+<!-- =========== WORLD / SYSTEM =========== -->
+<section id="world" class="world">
+  <div class="container">
+    <p class="reveal section-label">THE WORLD</p>
+    <h2 class="reveal section-title">두 개의 달, <em>하나의 약속</em></h2>
+    <p class="reveal section-subtitle">Beneath twin moons, the empire of Selinberg keeps its blood-old secret.</p>
+
+    <div class="system-grid">
+      <div class="reveal system-visual">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- outer ring -->
+          <circle cx="200" cy="200" r="180" fill="none" stroke="#c9a961" stroke-width="0.6" stroke-dasharray="2 4" opacity="0.6"/>
+          <circle cx="200" cy="200" r="155" fill="none" stroke="#c9a961" stroke-width="0.3" opacity="0.4"/>
+
+          <!-- inner ornate ring -->
+          <circle cx="200" cy="200" r="120" fill="none" stroke="#8b0a1a" stroke-width="0.8" opacity="0.5"/>
+
+          <!-- cassiopeia in center -->
+          <g transform="translate(110, 160)">
+            <g stroke="#e6c47d" stroke-width="1" fill="none" opacity="0.7">
+              <line x1="0" y1="60" x2="40" y2="0"/>
+              <line x1="40" y1="0" x2="80" y2="40"/>
+              <line x1="80" y1="40" x2="120" y2="-10"/>
+              <line x1="120" y1="-10" x2="160" y2="50"/>
+            </g>
+            <g fill="#f4ecd8">
+              <circle cx="0" cy="60" r="3.5"/>
+              <circle cx="40" cy="0" r="4"/>
+              <circle cx="80" cy="40" r="3.5"/>
+              <circle cx="120" cy="-10" r="4.5"/>
+              <circle cx="160" cy="50" r="3.5"/>
+            </g>
+            <!-- glow halos -->
+            <g fill="#e6c47d" opacity="0.3">
+              <circle cx="40" cy="0" r="9"/>
+              <circle cx="120" cy="-10" r="10"/>
+            </g>
+          </g>
+
+          <!-- cardinal ornaments -->
+          <text x="200" y="40" text-anchor="middle" fill="#c9a961" font-family="Italiana" font-size="12" letter-spacing="2">NORTH</text>
+          <text x="200" y="375" text-anchor="middle" fill="#c9a961" font-family="Italiana" font-size="12" letter-spacing="2">SOUTH</text>
+          <text x="30" y="205" text-anchor="middle" fill="#c9a961" font-family="Italiana" font-size="10" letter-spacing="2" transform="rotate(-90 30 205)">EAST</text>
+          <text x="370" y="205" text-anchor="middle" fill="#c9a961" font-family="Italiana" font-size="10" letter-spacing="2" transform="rotate(90 370 205)">WEST</text>
+
+          <!-- small stars on the ring -->
+          <g fill="#c9a961">
+            <circle cx="200" cy="20" r="2"/>
+            <circle cx="200" cy="380" r="2"/>
+            <circle cx="20" cy="200" r="2"/>
+            <circle cx="380" cy="200" r="2"/>
+          </g>
+
+          <text x="200" y="335" text-anchor="middle" fill="#8a7240" font-family="Italiana" font-size="11" letter-spacing="3">STELLAR MARK · CASSIOPEIA</text>
+        </svg>
+      </div>
+
+      <div class="reveal system-text">
+        <h3>별자리 각인 <span class="latin">Stellar Mark</span></h3>
+        <p>모든 인간은 태어날 때 옅은 별자리를 새기고 태어난다. 그러나 <span class="gilt">황가 직계</span>와 깊은 정사를 나눈 자에게는 그 황족의 별자리가 가슴 한가운데에 옮겨 새겨진다.</p>
+        <p>각인된 자는 성별과 관계없이 <span class="gilt">황가의 아이를 잉태할 수 있다</span>. 거리에 따라 빛이 약해지지만 — 가까이 갈수록, 마음이 흔들릴수록 더 강하게 빛난다.</p>
+        <p class="blood">숨길 수 없다. 지울 수 없다. 거짓말할 수 없다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== CHARACTERS / FIVE STARS =========== -->
+<section id="characters" class="characters">
+  <div class="container">
+    <p class="reveal section-label">DRAMATIS PERSONAE</p>
+    <h2 class="reveal section-title">다섯 개의 별 <em>· Five Stars Above</em></h2>
+    <p class="reveal section-subtitle">Five paths. Five constellations. Five hands that may have carved your fate.</p>
+
+    <div class="cards-grid">
+
+      <!-- 1. 베일린 -->
+      <div class="reveal char-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <div class="card-flip-hint">FLIP</div>
+          <div class="card-roman">I</div>
+          <div class="card-arch">— THE CROWN —</div>
+          <svg class="card-constellation" viewBox="0 0 200 100">
+            <g stroke="#c9a961" stroke-width="0.8" fill="none">
+              <line x1="20" y1="80" x2="60" y2="20"/>
+              <line x1="60" y1="20" x2="100" y2="60"/>
+              <line x1="100" y1="60" x2="140" y2="15"/>
+              <line x1="140" y1="15" x2="180" y2="70"/>
+            </g>
+            <g fill="#f4ecd8">
+              <circle cx="20" cy="80" r="3"/>
+              <circle cx="60" cy="20" r="3.5"/>
+              <circle cx="100" cy="60" r="3"/>
+              <circle cx="140" cy="15" r="4"/>
+              <circle cx="180" cy="70" r="3"/>
+            </g>
+          </svg>
+          <div class="card-name">베일린 아르세니우스</div>
+          <div class="card-name-en">Veylin Arsenius</div>
+          <div class="card-role">황태자 <span class="sep">·</span> 25세<br>금빛근위대 단장</div>
+          <div class="card-route-tag">CASSIOPEIA · TRUE ROUTE</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-roman">I</div>
+          <div class="card-arch">— THE CROWN —</div>
+          <p class="card-quote-ko">내 나방, 또 불 속으로 뛰어드는 게냐.</p>
+          <p class="card-desc">사관학교 시절부터 시안을 짝사랑해왔다. 들킬까 두려워 적의를 가장하기를 십 년. 너에게 닿고 싶지만 네가 날 사랑할 리 없다고 믿는다.</p>
+          <div class="card-tags">
+            <span class="card-tag">TSUNDERE</span>
+            <span class="card-tag">YANDERE</span>
+            <span class="card-tag">왕족 × 기사</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 클라우스 -->
+      <div class="reveal char-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <div class="card-flip-hint">FLIP</div>
+          <div class="card-roman">II</div>
+          <div class="card-arch">— THE HEALER —</div>
+          <svg class="card-constellation" viewBox="0 0 200 100">
+            <g stroke="#c9a961" stroke-width="0.8" fill="none">
+              <line x1="50" y1="20" x2="120" y2="30"/>
+              <line x1="120" y1="30" x2="150" y2="80"/>
+              <line x1="150" y1="80" x2="60" y2="75"/>
+              <line x1="60" y1="75" x2="50" y2="20"/>
+            </g>
+            <g fill="#f4ecd8">
+              <circle cx="50" cy="20" r="3"/>
+              <circle cx="120" cy="30" r="3.5"/>
+              <circle cx="150" cy="80" r="3"/>
+              <circle cx="60" cy="75" r="3"/>
+            </g>
+          </svg>
+          <div class="card-name">클라우스 베른하르트</div>
+          <div class="card-name-en">Klaus Bernhardt</div>
+          <div class="card-role">의무관 <span class="sep">·</span> 27세<br>죽마고우, 평민 수석</div>
+          <div class="card-route-tag">LYRA · GOOD ROUTE</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-roman">II</div>
+          <div class="card-arch">— THE HEALER —</div>
+          <p class="card-quote-ko">내가 너를 지킨 일은 늘 의리였다고 생각했는데.</p>
+          <p class="card-desc">시안의 임신을 가장 먼저 진단한 사람. 본인의 짝사랑조차 친구의 의리로 위장해온, 안경 너머 따뜻한 갈색 눈의 의사. 너의 별을 지워줄 수 있는 유일한 자.</p>
+          <div class="card-tags">
+            <span class="card-tag">시나몬롤</span>
+            <span class="card-tag">소꿉친구</span>
+            <span class="card-tag">평민 × 귀족</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 라비니아 -->
+      <div class="reveal char-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <div class="card-flip-hint">FLIP</div>
+          <div class="card-roman">III</div>
+          <div class="card-arch">— THE BLADE —</div>
+          <svg class="card-constellation" viewBox="0 0 200 100">
+            <g stroke="#c9a961" stroke-width="0.8" fill="none">
+              <line x1="40" y1="60" x2="80" y2="35"/>
+              <line x1="80" y1="35" x2="110" y2="50"/>
+              <line x1="110" y1="50" x2="140" y2="30"/>
+              <line x1="140" y1="30" x2="170" y2="75"/>
+              <line x1="170" y1="75" x2="120" y2="80"/>
+              <line x1="120" y1="80" x2="60" y2="80"/>
+            </g>
+            <g fill="#f4ecd8">
+              <circle cx="40" cy="60" r="2.5"/>
+              <circle cx="80" cy="35" r="3"/>
+              <circle cx="110" cy="50" r="2.5"/>
+              <circle cx="140" cy="30" r="3"/>
+              <circle cx="170" cy="75" r="3"/>
+              <circle cx="120" cy="80" r="2.5"/>
+              <circle cx="60" cy="80" r="2.5"/>
+            </g>
+          </svg>
+          <div class="card-name">라비니아 솔른</div>
+          <div class="card-name-en">Lavinia Sorne</div>
+          <div class="card-role">은빛근위대 부단장 <span class="sep">·</span> 26세<br>화상 흉터의 검사</div>
+          <div class="card-route-tag">URSA MINOR · FRIEND ROUTE</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-roman">III</div>
+          <div class="card-arch">— THE BLADE —</div>
+          <p class="card-quote-ko">제가 단장님의 검입니다. 다른 모든 것을 잃어도.</p>
+          <p class="card-desc">진실을 꿰뚫는 매서운 눈. 시안의 임신을 가장 먼저 알아챈 부단장. 로맨스가 아닌 가장 깊은 동지애의 길. 둘이 함께 살인마를 추적해 단죄하는 검의 서사.</p>
+          <div class="card-tags">
+            <span class="card-tag">검사</span>
+            <span class="card-tag">동지애</span>
+            <span class="card-tag">백합 가능</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 렌야 -->
+      <div class="reveal char-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <div class="card-flip-hint">FLIP</div>
+          <div class="card-roman">IV</div>
+          <div class="card-arch">— THE EXILE —</div>
+          <svg class="card-constellation" viewBox="0 0 200 100">
+            <g stroke="#c9a961" stroke-width="0.8" fill="none">
+              <path d="M 20 85 Q 40 25, 100 25 Q 160 25, 180 85" />
+            </g>
+            <g fill="#f4ecd8">
+              <circle cx="20" cy="85" r="2.5"/>
+              <circle cx="45" cy="48" r="3"/>
+              <circle cx="80" cy="28" r="2.5"/>
+              <circle cx="120" cy="28" r="3"/>
+              <circle cx="155" cy="48" r="2.5"/>
+              <circle cx="180" cy="85" r="2.5"/>
+            </g>
+          </svg>
+          <div class="card-name">렌 야</div>
+          <div class="card-name-en">Ren&apos;ya of the Veiled Court</div>
+          <div class="card-role">동방의 사절 <span class="sep">·</span> 나이 미상<br>핏빛 눈, 검은 베일</div>
+          <div class="card-route-tag">CORONA BOREALIS · HIDDEN ROUTE</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-roman">IV</div>
+          <div class="card-arch">— THE EXILE —</div>
+          <p class="card-quote-ko">이 별빛 따위, 내가 끊어 드리리다.</p>
+          <p class="card-desc">제국의 별자리 시스템 자체를 무너뜨리려는 망명 황자. 무도회마다 단 한 곡만 추고 사라지는 신비한 인물. 그와 함께라면 너는 별을 끊고, 제국을 떠나 새로운 자가 될 수 있다.</p>
+          <div class="card-tags">
+            <span class="card-tag">이국 미남</span>
+            <span class="card-tag">정치 음모</span>
+            <span class="card-tag">망명 ENDING</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 셀라파엘 -->
+      <div class="reveal char-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <div class="card-flip-hint">FLIP</div>
+          <div class="card-roman">V</div>
+          <div class="card-arch">— THE COLLECTOR —</div>
+          <svg class="card-constellation" viewBox="0 0 200 100">
+            <g stroke="#8b0a1a" stroke-width="0.8" fill="none">
+              <line x1="30" y1="35" x2="80" y2="20"/>
+              <line x1="80" y1="20" x2="150" y2="40"/>
+              <line x1="150" y1="40" x2="120" y2="80"/>
+              <line x1="120" y1="80" x2="50" y2="75"/>
+              <line x1="50" y1="75" x2="30" y2="35"/>
+            </g>
+            <g fill="#f4ecd8">
+              <circle cx="30" cy="35" r="3"/>
+              <circle cx="80" cy="20" r="3"/>
+              <circle cx="150" cy="40" r="3.5"/>
+              <circle cx="120" cy="80" r="3"/>
+              <circle cx="50" cy="75" r="3"/>
+            </g>
+          </svg>
+          <div class="card-name">셀라파엘 반스 공작</div>
+          <div class="card-name-en">Duke Selapheal Vance</div>
+          <div class="card-role">제3황자 <span class="sep">·</span> 28세<br>자선가 · 유리살인마</div>
+          <div class="card-route-tag">CORVUS · DARK ROUTE</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-roman">V</div>
+          <div class="card-arch">— THE COLLECTOR —</div>
+          <p class="card-quote-ko">영원히 깨지지 않는 너를 갖고 싶을 뿐이야.</p>
+          <p class="card-desc">자선가의 얼굴 뒤에 숨은 진짜 살인마. 너를 닮은 자들을 유리관에 가두고 정수를 모은다. 그의 광기에 응답하는 어두운 길. <strong style="color:var(--blood-soft)">— 18+ 컨텐츠 잠금.</strong></p>
+          <div class="card-tags">
+            <span class="card-tag">다크 로맨스</span>
+            <span class="card-tag">얀데레</span>
+            <span class="card-tag card-warn">18+ ONLY</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =========== MYSTERY =========== -->
+<section id="mystery" class="mystery">
+  <div class="mystery-content">
+    <p class="reveal section-label">THE GLASS KILLER</p>
+    <h2 class="reveal section-title">유리살인마</h2>
+    <p class="reveal section-subtitle">Five victims. Each chest sealed with a shard of stolen starlight.</p>
+
+    <!-- Glass shard SVG -->
+    <div class="reveal glass-shard">
+      <svg viewBox="0 0 200 200" width="100%" height="100%">
+        <defs>
+          <linearGradient id="shard" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#8b0a1a" stop-opacity="0.8"/>
+            <stop offset="0.5" stop-color="#c9a961" stop-opacity="0.6"/>
+            <stop offset="1" stop-color="#0a0612" stop-opacity="0.4"/>
+          </linearGradient>
+        </defs>
+        <polygon points="100,20 140,80 130,170 60,160 50,90" fill="url(#shard)" stroke="#c9a961" stroke-width="0.8" opacity="0.85"/>
+        <polygon points="100,20 130,170" fill="none" stroke="#e6c47d" stroke-width="0.4" opacity="0.6"/>
+        <polygon points="50,90 140,80" fill="none" stroke="#e6c47d" stroke-width="0.4" opacity="0.4"/>
+        <circle cx="100" cy="100" r="2" fill="#f4ecd8"/>
+        <circle cx="100" cy="100" r="8" fill="none" stroke="#f4ecd8" stroke-width="0.3" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <p class="reveal mystery-quote">
+      피해자의 가슴에서 발견된 유리 조각들은 모두 <em>같은 별자리</em>를 그리고 있었다.<br>— 그리고 그 별자리는 시안 라이덴의 가슴에 새겨진 것과 닮아 있었다.
+    </p>
+
+    <div class="reveal mystery-meta">
+      <div><strong>V</strong>피해자</div>
+      <div><strong>IV</strong>달 전 무도회</div>
+      <div><strong>I</strong>잃어버린 밤</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== FEATURES =========== -->
+<section class="features">
+  <div class="container">
+    <p class="reveal section-label">FEATURES</p>
+    <h2 class="reveal section-title">게임 시스템</h2>
+
+    <div class="feature-grid">
+      <div class="reveal feature">
+        <div class="feature-icon">V</div>
+        <h4>다섯 갈래의 운명</h4>
+        <p>전혀 다른 결말을 향한 다섯 개의 메인 루트. 각 루트마다 별자리·BGM·결말 CG가 독립적으로 준비됩니다.</p>
+      </div>
+      <div class="reveal feature">
+        <div class="feature-icon">✦</div>
+        <h4>별자리 사진관</h4>
+        <p>플레이 중 수집한 CG가 별자리 카드 형태로 보관됩니다. SNS 공유 시 자동 워터마크가 새겨져 컬렉션을 자랑할 수 있습니다.</p>
+      </div>
+      <div class="reveal feature">
+        <div class="feature-icon">⟁</div>
+        <h4>단서 보드 추리</h4>
+        <p>화이트보드 위의 단서를 붉은 실로 연결해 가설을 세우는 미니게임. Phoenix Wright × Return of the Obra Dinn의 감각.</p>
+      </div>
+      <div class="reveal feature">
+        <div class="feature-icon">𝅘𝅥</div>
+        <h4>가면무도회 댄스</h4>
+        <p>리듬 액션 미니게임. 누구와 추는 첫 곡인지에 따라 다음 챕터의 분기가 결정됩니다.</p>
+      </div>
+      <div class="reveal feature">
+        <div class="feature-icon">𝔓</div>
+        <h4>사교 신문 시스템</h4>
+        <p>플레이어의 행동에 따라 다음 날 7대 신문의 헤드라인이 동적으로 생성됩니다. 평판이 곧 운명입니다.</p>
+      </div>
+      <div class="reveal feature">
+        <div class="feature-icon">☾</div>
+        <h4>잃어버린 밤의 회상</h4>
+        <p>한 챕터마다 한 조각씩, 진홍 무도회 그날 밤의 기억을 회복합니다. 누구의 마음을 따라가느냐에 따라 보이는 조각이 달라집니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== CTA =========== -->
+<section id="cta" class="cta">
+  <div class="container">
+    <p class="reveal cta-eyebrow">CLOSED BETA — INVITATION ONLY</p>
+    <h2 class="reveal cta-title">Enter the <em>Crimson Ball</em></h2>
+    <p class="reveal cta-ko">진 홍 의 초 대 장</p>
+    <p class="reveal cta-body">
+      클로즈드 베타 신청자에게만 진홍 무도회의 초대장을 보내드립니다. 첫 번째 루트와 일부 CG를 미리 만나보세요.
+    </p>
+    <form class="reveal signup-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='✦ 초대장이 발송되었습니다 ✦'; this.querySelector('button').style.background='var(--blood)'; this.querySelector('button').style.color='var(--star)';">
+      <input type="email" placeholder="your.email@..." required>
+      <button type="submit">RSVP</button>
+    </form>
+    <p class="reveal release-date">FULL RELEASE <strong>·</strong> SPRING 2026</p>
+  </div>
+</section>
+
+<!-- =========== FOOTER =========== -->
+<footer>
+  <div class="ornament">
+    <svg width="120" height="20" viewBox="0 0 120 20">
+      <line x1="0" y1="10" x2="40" y2="10" stroke="currentColor" stroke-width="0.4"/>
+      <text x="60" y="14" text-anchor="middle" fill="currentColor" font-size="14">✧ ✦ ✧</text>
+      <line x1="80" y1="10" x2="120" y2="10" stroke="currentColor" stroke-width="0.4"/>
+    </svg>
+  </div>
+  <p>© 2026 Whose Star? Studio · All Rights Reserved</p>
+  <p style="font-family: var(--display-en); letter-spacing: 0.4em; color: var(--gold-dim); font-size: 0.75rem;">SELINBERG IMPERIAL EDITION</p>
+  <div class="footer-links">
+    <a href="#">Twitter</a>
+    <a href="#">Discord</a>
+    <a href="#">Press Kit</a>
+    <a href="#">Privacy</a>
+  </div>
+</footer>
+
+<script>
+  // === Scroll reveals ===
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const siblings = [...e.target.parentElement.children].filter(c => c.classList.contains('reveal'));
+        const idx = siblings.indexOf(e.target);
+        setTimeout(() => e.target.classList.add('in'), idx * 90);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(r => io.observe(r));
+
+  // === Random twinkling stars ===
+  function makeTwinkle() {
+    const t = document.createElement('div');
+    t.className = 'twinkle';
+    t.style.left = Math.random() * 100 + 'vw';
+    t.style.top = Math.random() * 100 + 'vh';
+    t.style.animationDuration = (3 + Math.random() * 3) + 's';
+    t.style.animationDelay = Math.random() * 2 + 's';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 6000);
+  }
+  setInterval(makeTwinkle, 800);
+
+  // === Card flip — close others when one opens (optional) ===
+  document.querySelectorAll('.char-card').forEach(card => {
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.classList.toggle('flipped');
+      }
+    });
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', '캐릭터 카드를 뒤집어 자세히 보기');
+  });
+</script>
+
+</body>
+</html>

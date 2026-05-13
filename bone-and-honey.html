@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>뼈와 꿀 — BONE & HONEY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Italiana&family=Noto+Serif+KR:wght@200;300;400;500;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0807;
+    --ink-deep: #050403;
+    --bone: #e8dfc8;
+    --bone-dim: #b8ad95;
+    --honey: #c8954a;
+    --honey-bright: #e4ad5e;
+    --blood: #6b1a1a;
+    --blood-deep: #3a0e0e;
+    --warm-dark: #1a1410;
+    --rule: rgba(232, 223, 200, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--bone);
+    font-family: 'Cormorant Garamond', 'Noto Serif KR', serif;
+    font-weight: 300;
+    line-height: 1.5;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* VIGNETTE */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%);
+  }
+
+  /* ========== NAV ========== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    background: linear-gradient(180deg, rgba(10,8,7,0.8) 0%, rgba(10,8,7,0) 100%);
+  }
+
+  .nav-mark {
+    font-family: 'Italiana', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.4em;
+    color: var(--bone);
+  }
+
+  .nav-mark span {
+    color: var(--honey);
+  }
+
+  .nav-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--bone-dim);
+    text-transform: uppercase;
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(200, 149, 74, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(107, 26, 26, 0.12) 0%, transparent 50%);
+  }
+
+  .hero-mark {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.5em;
+    color: var(--honey);
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .hero-mark::before {
+    content: "";
+    width: 60px;
+    height: 1px;
+    background: var(--honey);
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 900;
+    font-size: clamp(5rem, 14vw, 13rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--bone);
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .hero-title .amp {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--honey);
+    font-size: 0.7em;
+    margin: 0 0.05em;
+    vertical-align: 0.1em;
+  }
+
+  .hero-subtitle {
+    font-family: 'Italiana', serif;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    letter-spacing: 0.5em;
+    color: var(--bone-dim);
+    margin-bottom: 4rem;
+    margin-left: 0.5em;
+  }
+
+  .hero-tagline {
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: 0;
+    text-align: right;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    line-height: 1.6;
+    color: var(--bone);
+  }
+
+  .hero-tagline em {
+    color: var(--honey);
+    font-style: normal;
+  }
+
+  .hero-meta {
+    position: absolute;
+    bottom: 3rem;
+    left: 3rem;
+    right: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--bone-dim);
+    text-transform: uppercase;
+  }
+
+  .hero-meta .vertical {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    position: absolute;
+    right: 0;
+    bottom: 4rem;
+  }
+
+  .scroll-cue {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .scroll-cue::after {
+    content: "";
+    width: 1px;
+    height: 50px;
+    background: var(--bone-dim);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0%, 100% { transform: scaleY(0.4); transform-origin: top; }
+    50% { transform: scaleY(1); }
+  }
+
+  /* ========== PROLOGUE ========== */
+  .prologue {
+    padding: 12rem 3rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: var(--honey);
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .section-label::before {
+    content: "✦";
+    color: var(--honey);
+  }
+
+  .prologue-text {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 300;
+    font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+    line-height: 1.7;
+    max-width: 900px;
+    color: var(--bone);
+    letter-spacing: -0.01em;
+  }
+
+  .prologue-text .drop {
+    float: left;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 5em;
+    line-height: 0.85;
+    color: var(--honey);
+    padding: 0.1em 0.15em 0 0;
+    font-weight: 500;
+  }
+
+  .prologue-text mark {
+    background: none;
+    color: var(--honey);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .prologue-quote {
+    margin-top: 6rem;
+    padding-left: 4rem;
+    border-left: 1px solid var(--honey);
+    max-width: 600px;
+    margin-left: auto;
+  }
+
+  .prologue-quote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--bone-dim);
+    line-height: 1.6;
+  }
+
+  .prologue-quote cite {
+    display: block;
+    margin-top: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--honey);
+  }
+
+  /* ========== WORLD ========== */
+  .world {
+    padding: 8rem 3rem;
+    background:
+      linear-gradient(180deg, transparent 0%, var(--warm-dark) 30%, var(--warm-dark) 70%, transparent 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .world-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+  }
+
+  .world-title {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 200;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--bone);
+    margin-bottom: 3rem;
+  }
+
+  .world-title em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--honey);
+    display: block;
+    font-size: 0.5em;
+    letter-spacing: 0.1em;
+    margin-top: 0.5em;
+  }
+
+  .world-body {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--bone-dim);
+    font-weight: 300;
+  }
+
+  .world-body p + p { margin-top: 1.5rem; }
+
+  .world-body strong {
+    color: var(--bone);
+    font-weight: 500;
+  }
+
+  .world-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .stat {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    color: var(--honey);
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--bone-dim);
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+  }
+
+  /* ========== CAST ========== */
+  .cast {
+    padding: 10rem 3rem;
+    position: relative;
+  }
+
+  .cast-header {
+    max-width: 1400px;
+    margin: 0 auto 6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .cast-title {
+    font-family: 'Italiana', serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    letter-spacing: 0.05em;
+    line-height: 0.9;
+    color: var(--bone);
+  }
+
+  .cast-title em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--honey);
+  }
+
+  .cast-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--bone-dim);
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  .cast-counter span {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--honey);
+    letter-spacing: 0;
+    margin-top: 0.5rem;
+  }
+
+  .cast-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  .character {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .character:hover {
+    transform: translateY(-8px);
+  }
+
+  .char-portrait {
+    aspect-ratio: 3 / 4.5;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--rule);
+  }
+
+  .char-portrait::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)' opacity='0.4'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+    opacity: 0.6;
+    z-index: 2;
+  }
+
+  .char-portrait::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, var(--ink-deep) 100%);
+    z-index: 3;
+  }
+
+  .char-1 .char-portrait { background: linear-gradient(160deg, #1a1f2e 0%, #0a0d18 50%, #050810 100%); }
+  .char-2 .char-portrait { background: linear-gradient(160deg, #3a1a14 0%, #1f0a08 50%, #0d0303 100%); }
+  .char-3 .char-portrait { background: linear-gradient(160deg, #1e2a25 0%, #0e1814 50%, #050a08 100%); }
+  .char-4 .char-portrait { background: linear-gradient(160deg, #2a1f1a 0%, #14100c 50%, #080604 100%); }
+
+  .char-glyph {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 11rem;
+    color: var(--bone);
+    opacity: 0.12;
+    z-index: 1;
+    line-height: 1;
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .character:hover .char-glyph {
+    opacity: 0.25;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+
+  .char-tag {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    z-index: 4;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--bone-dim);
+    text-transform: uppercase;
+  }
+
+  .char-tag .archetype {
+    color: var(--honey);
+  }
+
+  .char-name-block {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    z-index: 4;
+  }
+
+  .char-element {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--honey);
+    margin-bottom: 0.5rem;
+  }
+
+  .char-name-ko {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 500;
+    font-size: 1.8rem;
+    color: var(--bone);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .char-name-en {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--bone-dim);
+    text-transform: uppercase;
+  }
+
+  .char-info {
+    padding: 0 0.5rem;
+  }
+
+  .char-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--bone-dim);
+    margin-bottom: 1rem;
+    min-height: 4em;
+  }
+
+  .char-details {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--bone-dim);
+    text-transform: uppercase;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .char-secret .char-portrait {
+    background: linear-gradient(160deg, #2a1414 0%, #150707 50%, #080303 100%);
+  }
+  .char-secret .char-name-ko,
+  .char-secret .char-name-en,
+  .char-secret .char-element {
+    filter: blur(6px);
+    transition: filter 0.6s ease;
+  }
+  .char-secret:hover .char-name-ko,
+  .char-secret:hover .char-name-en,
+  .char-secret:hover .char-element {
+    filter: blur(0);
+  }
+  .char-secret .char-tag .archetype { color: var(--blood); }
+  .char-secret .char-glyph { color: var(--blood); opacity: 0.3; }
+
+  /* ========== FEATURES ========== */
+  .features {
+    padding: 10rem 3rem;
+    background: var(--ink-deep);
+    position: relative;
+  }
+
+  .features-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .features-title {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 200;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1.1;
+    color: var(--bone);
+    max-width: 900px;
+    margin-bottom: 6rem;
+  }
+
+  .features-title em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--honey);
+    font-weight: 400;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .feature {
+    padding: 3rem 2.5rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    transition: background 0.4s ease;
+  }
+
+  .feature:hover {
+    background: rgba(200, 149, 74, 0.03);
+  }
+
+  .feature:nth-child(3n) { border-right: none; }
+
+  .feature-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--honey);
+    margin-bottom: 2rem;
+  }
+
+  .feature-title {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 500;
+    font-size: 1.6rem;
+    color: var(--bone);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .feature-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--honey);
+    margin-bottom: 1.5rem;
+  }
+
+  .feature-desc {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--bone-dim);
+    font-weight: 300;
+  }
+
+  /* ========== STATS BAR ========== */
+  .stats-bar {
+    padding: 6rem 3rem;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .stats-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+  }
+
+  .stats-inner .stat-num {
+    font-size: 4.5rem;
+  }
+
+  /* ========== CTA ========== */
+  .cta {
+    padding: 14rem 3rem;
+    text-align: center;
+    position: relative;
+    background:
+      radial-gradient(ellipse at center, rgba(107, 26, 26, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 30%, rgba(200, 149, 74, 0.08) 0%, transparent 50%);
+  }
+
+  .cta-mark {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.5em;
+    color: var(--honey);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+
+  .cta-title {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 200;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 1;
+    color: var(--bone);
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-en {
+    font-family: 'Italiana', serif;
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    letter-spacing: 0.4em;
+    color: var(--honey);
+    margin-bottom: 4rem;
+  }
+
+  .cta-form {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    border-bottom: 1px solid var(--bone-dim);
+    transition: border-color 0.3s ease;
+  }
+
+  .cta-form:focus-within {
+    border-bottom-color: var(--honey);
+  }
+
+  .cta-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 1.2rem 0.5rem;
+    color: var(--bone);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    outline: none;
+  }
+
+  .cta-form input::placeholder {
+    color: var(--bone-dim);
+    font-style: italic;
+  }
+
+  .cta-form button {
+    background: transparent;
+    border: none;
+    color: var(--honey);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 1.2rem 1.5rem;
+    transition: color 0.3s ease, letter-spacing 0.3s ease;
+  }
+
+  .cta-form button:hover {
+    color: var(--bone);
+    letter-spacing: 0.4em;
+  }
+
+  .cta-note {
+    margin-top: 3rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--bone-dim);
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    padding: 4rem 3rem 3rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--bone-dim);
+    text-transform: uppercase;
+  }
+
+  .footer-mark {
+    font-family: 'Italiana', serif;
+    font-size: 1rem;
+    letter-spacing: 0.4em;
+    color: var(--bone);
+    text-transform: none;
+  }
+
+  .footer-mark span { color: var(--honey); }
+
+  /* ========== REVEAL ANIMATIONS ========== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 980px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-meta { display: none; }
+    .hero { padding: 6rem 1.5rem 4rem; }
+    .hero-meta { left: 1.5rem; right: 1.5rem; bottom: 2rem; }
+    .hero-meta .vertical { display: none; }
+    .prologue { padding: 6rem 1.5rem; }
+    .prologue-text { font-size: 1.3rem; }
+    .prologue-quote { padding-left: 2rem; margin-left: 0; }
+    .world { padding: 6rem 1.5rem; }
+    .world-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .cast { padding: 6rem 1.5rem; }
+    .cast-header { flex-direction: column; align-items: flex-start; gap: 2rem; margin-bottom: 3rem; }
+    .cast-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .features { padding: 6rem 1.5rem; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature { border-right: none; padding: 2.5rem 1rem; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .cta { padding: 8rem 1.5rem; }
+    footer { flex-direction: column; gap: 1.5rem; padding: 3rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-mark">BONE <span>&</span> HONEY</div>
+  <div class="nav-meta">CH. 00 — PROLOGUE</div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-mark reveal">VOL. I — KEEPER'S BISTRO</div>
+  <h1 class="hero-title reveal">뼈와<br>꿀</h1>
+  <div class="hero-subtitle reveal">BONE <span style="color: var(--honey)">&</span> HONEY</div>
+  <p class="hero-tagline reveal">
+    삼촌이 남긴 작은 비스트로.<br>
+    손님 대신 <em>짐승들</em>이 들이닥쳤다.
+  </p>
+
+  <div class="hero-meta">
+    <div class="scroll-cue">스크롤</div>
+    <div>
+      INTERACTIVE NOIR ROMANCE<br>
+      <span style="color: var(--honey)">2026</span> — TBA
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROLOGUE ============ -->
+<section class="prologue">
+  <div class="section-label reveal">PROLOGUE — 序章</div>
+
+  <p class="prologue-text reveal">
+    <span class="drop">서</span>울 후암동, 좁은 골목 끝. 양옥집을 개조한 작은 비스트로 <mark>「검은 정원」</mark>은 30년간 두 조직이 충돌 없이 마주 앉을 수 있는 유일한 자리였다. 보관자가 죽고, 가게는 <mark>그의 조카</mark>에게 넘어갔다. 그는 이 가게가 무엇인지 알지 못한다. 그래서 오늘 밤도, 피 묻은 손님에게 수건부터 건넨다.
+  </p>
+
+  <div class="prologue-quote reveal">
+    <p>"여기 사장 새로 바뀌었다고 들었는데. 얼굴 좀 보여줘요."</p>
+    <cite>— 차이안 / Ch. 2 「불을 피우는 손」</cite>
+  </div>
+</section>
+
+<!-- ============ WORLD ============ -->
+<section class="world">
+  <div class="world-grid">
+    <div class="reveal">
+      <h2 class="world-title">
+        검은 정원
+        <em>Le Jardin Noir, est. 1995</em>
+      </h2>
+    </div>
+    <div class="reveal">
+      <div class="world-body">
+        <p>서울 후암동의 좁은 골목 끝, 오래된 양옥집 1층. 표면적으로는 평범한 비스트로다. <strong>위층은 살림집</strong>, 살림집의 베란다는 가게의 작은 정원과 이어져 있다. 정원의 흙은 누군가 의도적으로 검게 만들었다.</p>
+        <p>30년 전, 남부 <strong>청호회</strong>와 북부 <strong>백우</strong>는 이곳을 휴전의 자리로 정했다. <strong>보관자</strong>가 살아 있는 한 양측은 칼을 거두기로 했다. 1년 전, 보관자가 죽었다. 교통사고였다고 한다.</p>
+        <p>그의 조카가 가게를 물려받았다. 그는 요리를 못한다. 그는 자신이 무엇을 물려받았는지 아직 모른다.</p>
+      </div>
+
+      <div class="world-stats">
+        <div class="stat">
+          <div class="stat-num">04</div>
+          <div class="stat-label">Routes</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">17</div>
+          <div class="stat-label">Endings</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">128</div>
+          <div class="stat-label">Choices</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Loops</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CAST ============ -->
+<section class="cast">
+  <div class="cast-header reveal">
+    <h2 class="cast-title">Dramatis<br><em>Personae</em></h2>
+    <div class="cast-counter">
+      Routes Available
+      <span>I — IV</span>
+    </div>
+  </div>
+
+  <div class="cast-grid">
+
+    <!-- CHAR 1: ICE -->
+    <div class="character char-1 reveal">
+      <div class="char-portrait">
+        <div class="char-tag">
+          <span>I.</span>
+          <span class="archetype">ICE</span>
+        </div>
+        <div class="char-glyph">耳</div>
+        <div class="char-name-block">
+          <div class="char-element">「얼음」</div>
+          <div class="char-name-ko">이결</div>
+          <div class="char-name-en">LEE GYEOL</div>
+        </div>
+      </div>
+      <div class="char-info">
+        <p class="char-quote">"같은 자리, 같은 시간, 같은 메뉴. 그가 어긋난 날은 한 번도 없었다."</p>
+        <div class="char-details">
+          <span>AGE 33</span>
+          <span>청호회</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAR 2: FIRE -->
+    <div class="character char-2 reveal">
+      <div class="char-portrait">
+        <div class="char-tag">
+          <span>II.</span>
+          <span class="archetype">FIRE</span>
+        </div>
+        <div class="char-glyph">焰</div>
+        <div class="char-name-block">
+          <div class="char-element">「불」</div>
+          <div class="char-name-ko">차이안</div>
+          <div class="char-name-en">CHA I-AN</div>
+        </div>
+      </div>
+      <div class="char-info">
+        <p class="char-quote">"칼을 웃으면서 휘두르는 게 더 잔인하다는 걸, 그는 알고 있었다."</p>
+        <div class="char-details">
+          <span>AGE 29</span>
+          <span>백우</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAR 3: MIST -->
+    <div class="character char-3 reveal">
+      <div class="char-portrait">
+        <div class="char-tag">
+          <span>III.</span>
+          <span class="archetype">MIST</span>
+        </div>
+        <div class="char-glyph">霧</div>
+        <div class="char-name-block">
+          <div class="char-element">「안개」</div>
+          <div class="char-name-ko">무명</div>
+          <div class="char-name-en">MUMYUNG</div>
+        </div>
+      </div>
+      <div class="char-info">
+        <p class="char-quote">"부엌 칼이 비정상적으로 빠르다. 그 이유를 묻는 순간, 그는 사라진다."</p>
+        <div class="char-details">
+          <span>AGE 31</span>
+          <span>제3의 손</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAR 4: MIRROR (SECRET) -->
+    <div class="character char-secret reveal">
+      <div class="char-portrait">
+        <div class="char-tag">
+          <span>IV.</span>
+          <span class="archetype">SECRET</span>
+        </div>
+        <div class="char-glyph">鏡</div>
+        <div class="char-name-block">
+          <div class="char-element">「거울」</div>
+          <div class="char-name-ko">진재</div>
+          <div class="char-name-en">JIN-JAE</div>
+        </div>
+      </div>
+      <div class="char-info">
+        <p class="char-quote">"평범한 우체부였다. 10년을, 그는 평범하게 기다렸다."</p>
+        <div class="char-details">
+          <span>LOCKED</span>
+          <span>3RD PLAY</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features">
+  <div class="features-inner">
+    <h2 class="features-title reveal">
+      읽는 것이 아니라 <em>견디는</em> 이야기.<br>
+      모든 선택은 누군가의 마지막 문장이 된다.
+    </h2>
+
+    <div class="features-grid">
+      <div class="feature reveal">
+        <div class="feature-num">— 01</div>
+        <h3 class="feature-title">평정의 저울</h3>
+        <p class="feature-en">The Composure Scale</p>
+        <p class="feature-desc">피를 보고도 수건을 건네는 손. 평정심 스탯이 일정 수치를 넘기면, 위험한 장면에서만 열리는 숨겨진 선택지가 드러난다. 도아가 진짜 누구인지, 당신의 손이 결정한다.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-num">— 02</div>
+        <h3 class="feature-title">짐승의 시점</h3>
+        <p class="feature-en">Chapters of the Beast</p>
+        <p class="feature-desc">늙은 안내견 '백'의 시점으로 진행되는 막간 챕터. 한쪽 눈으로 본 1년의 침묵, 그가 알아차린 거짓말, 그가 기억하는 죽음.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-num">— 03</div>
+        <h3 class="feature-title">네 갈래의 밤</h3>
+        <p class="feature-en">Four Nights, Four Bodies</p>
+        <p class="feature-desc">얼음·불·안개·거울. 각자 다른 무게로 도아의 위층에 발을 들인다. 동거 분기, 페이크 약혼, 양강 각성, 회귀 떡밥 — 한 명만 고르거나, 끝까지 미루거나.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-num">— 04</div>
+        <h3 class="feature-title">17개의 마지막 장</h3>
+        <p class="feature-en">Seventeen Last Pages</p>
+        <p class="feature-desc">루트당 4개의 엔딩, 그리고 모든 루트를 가로지르는 시크릿 엔딩. 죽음으로, 침묵으로, 새로운 휴전으로, 혹은 처음으로 돌아가는 것으로.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-num">— 05</div>
+        <h3 class="feature-title">다중 시점 단편</h3>
+        <p class="feature-en">Variant POV Vignettes</p>
+        <p class="feature-desc">엔딩 후 잠금 해제되는 공 시점 단편. 같은 밤, 같은 식탁, 다른 손. 동일한 장면을 네 번 다른 무게로 읽는다.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-num">— 06</div>
+        <h3 class="feature-title">하드/소프트 분기</h3>
+        <p class="feature-en">Sharpness Setting</p>
+        <p class="feature-desc">독자가 직접 설정하는 수위와 폭력의 결. 부드러운 결로도, 날 선 결로도. 어느 쪽이든 같은 사람이 같은 자리에서 같은 선택을 한다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS BAR ============ -->
+<section class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat reveal">
+      <div class="stat-num">300K+</div>
+      <div class="stat-label">단어 분량</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num">42</div>
+      <div class="stat-label">CG 이벤트</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num">11h</div>
+      <div class="stat-label">평균 플레이</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num">KR / EN</div>
+      <div class="stat-label">지원 언어</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta">
+  <div class="cta-mark reveal">PRE-REGISTRATION OPEN</div>
+  <h2 class="cta-title reveal">먼저 도착한 사람에게,<br>먼저 문이 열린다.</h2>
+  <p class="cta-en reveal">THE DOOR OPENS FIRST <span style="color: var(--bone)">FOR THOSE WHO ARRIVE FIRST</span></p>
+
+  <form class="cta-form reveal" onsubmit="event.preventDefault(); this.querySelector('button').innerText='✦ 등록됨';">
+    <input type="email" placeholder="당신의 주소를 남겨주세요" required />
+    <button type="submit">예약 →</button>
+  </form>
+
+  <p class="cta-note reveal">사전 등록자에게는 1막 시연본과 백(犬) 시점 단편 「겨울 잠」이 발송됩니다.</p>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-mark">BONE <span>&</span> HONEY</div>
+  <div>© LE JARDIN NOIR STUDIO · 2026 · ALL RIGHTS RESERVED</div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+  // Stagger hero reveals
+  document.querySelectorAll('.hero .reveal').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.15}s`;
+    setTimeout(() => el.classList.add('visible'), 100);
+  });
+</script>
+
+</body>
+</html>
